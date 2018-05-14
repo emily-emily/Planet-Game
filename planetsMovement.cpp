@@ -4,75 +4,75 @@
 
 #include<stdio.h>
 
-void getNewCoordinates(Person &p){
-    p.xPos += p.xVel;
-    p.yPos += p.yVel;
+void getNewCoordinates(Sprite &s){
+    s.xPos += s.xVel;
+    s.yPos += s.yVel;
 }
 
-void jump(Person &p, Circle c){
+void jump(Sprite &s, Planet a){
     float x, y;
     float b;
-    x = p.xPos - c.x;
-    y = p.yPos - c.y;
+    x = s.xPos - a.x;
+    y = s.yPos - a.y;
 
     b = atan(y / x);
 
-    if (isGrounded(p, c)){
+    if (isGrounded(s, a)){
         if (x < 0){
-            p.xVel -= jumpVel * cos(b) / FPS;
-            p.yVel -= jumpVel * sin(b) / FPS;
+            s.xVel -= jumpVel * cos(b) / FPS;
+            s.yVel -= jumpVel * sin(b) / FPS;
         }
         else{
-            p.xVel += jumpVel * cos(b) / FPS;
-            p.yVel += jumpVel * sin(b) / FPS;
+            s.xVel += jumpVel * cos(b) / FPS;
+            s.yVel += jumpVel * sin(b) / FPS;
         }
     }
 
 
-    printf("jump p.xVel is %f\n", jumpVel * cos(b) / FPS);
-    printf("jump p.yVel is %f\n", jumpVel * sin(b) / FPS);
+    printf("jump s.xVel is %f\n", jumpVel * cos(b) / FPS);
+    printf("jump s.yVel is %f\n", jumpVel * sin(b) / FPS);
 
 }
 
-bool isGrounded(Person p, Circle c){
+bool isGrounded(Sprite s, Planet a){
     float d;
-    d = sqrt(pow(p.xPos - c.x, 2) + pow(p.yPos - c.y, 2));
+    d = sqrt(pow(s.xPos - a.x, 2) + pow(s.yPos - a.y, 2));
 
-    if (d <= c.r){
+    if (d <= a.r){
         return true;
     }
     else return false;
 }
 
-void gravity(Person &p, Circle c){
+void gravity(Sprite &s, Planet a){
     float x, y;
     float b;
-    x = p.xPos - c.x;
-    y = p.yPos - c.y;
+    x = s.xPos - a.x;
+    y = s.yPos - a.y;
 
     b = atan(y / x);
 
-    if (isGrounded(p, c)){
-        p.xVel = 0;
-        p.yVel = 0;
+    if (isGrounded(s, a)){
+        s.xVel = 0;
+        s.yVel = 0;
     }
     else{
         if (x > 0){
-            p.xVel -= gVel * cos(b) / FPS;
-            p.yVel -= gVel * sin(b) / FPS;
+            s.xVel -= gVel * cos(b) / FPS;
+            s.yVel -= gVel * sin(b) / FPS;
         }
         else{
-            p.xVel += gVel * cos(b) / FPS;
-            p.yVel += gVel * sin(b) / FPS;
+            s.xVel += gVel * cos(b) / FPS;
+            s.yVel += gVel * sin(b) / FPS;
         }
     }
 }
 
-float rotateAngle(Person p, Circle c){
+float rotateAngle(Sprite p, Planet a){
     float x, y;
     float b;
-    x = p.xPos - c.x;
-    y = p.yPos - c.y;
+    x = p.xPos - a.x;
+    y = p.yPos - a.y;
 
     b = atan(y / x);
 

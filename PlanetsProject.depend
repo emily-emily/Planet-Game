@@ -1,0 +1,22 @@
+# depslib dependency file v1.0
+1526263180 source:c:\users\x\downloads\planetsproject\planetsallegro.cpp
+	<allegro5/allegro.h>
+	<allegro5/allegro_native_dialog.h>
+	<allegro5/allegro_image.h>
+	<allegro5/allegro_primitives.h>
+
+1526268166 source:c:\users\x\downloads\planetsproject\main.cpp
+	<allegro5/allegro.h>
+	<allegro5/allegro_native_dialog.h>
+	<allegro5/allegro_primitives.h>
+	"planets.h"
+	<stdio.h>
+
+1526267977 c:\users\x\downloads\planetsproject\planets.h
+
+1526268268 source:c:\users\x\downloads\planetsproject\planetsmovement.cpp
+	<allegro5/allegro.h>
+	<cmath>
+	"planets.h"
+	<stdio.h>
+

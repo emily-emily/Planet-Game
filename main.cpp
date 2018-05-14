@@ -33,16 +33,16 @@ int main(int argc, char *argv[]){
 
     al_start_timer(timer);
 
-    Circle a;
+    Planet a;
     a.r = 100;
     a.x = 300;
     a.y = 250;
 
-    Person p;
-    p.xPos = 400;
-    p.yPos = 350;
-    p.xVel = 0;
-    p.yVel = 0;
+    Sprite s;
+    s.xPos = 400;
+    s.yPos = 350;
+    s.xVel = 0;
+    s.yVel = 0;
 
     while (running){
         ALLEGRO_EVENT ev;
@@ -51,13 +51,13 @@ int main(int argc, char *argv[]){
         al_wait_for_event(q, &ev);
 
         if (ev.type == ALLEGRO_EVENT_TIMER){
-            gravity(p, a);
+            gravity(s, a);
 
             if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
-                jump(p, a);
+                jump(s, a);
 
-            getNewCoordinates(p);
-            draw(a, p, character);
+            getNewCoordinates(s);
+            draw(a, s, character);
             al_flip_display();
         }
 
@@ -65,14 +65,14 @@ int main(int argc, char *argv[]){
             running = false;
 
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-            //jump(p, a);
+            //jump(s, a);
         }
 
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            p.xPos = ev.mouse.x;
-            p.xVel = 0;
-            p.yPos = ev.mouse.y;
-            p.yVel = 0;
+            s.xPos = ev.mouse.x;
+            s.xVel = 0;
+            s.yPos = ev.mouse.y;
+            s.yVel = 0;
         }
 
     }
@@ -84,16 +84,16 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-void draw(Circle c, Person p, ALLEGRO_BITMAP *bitmap){
+void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
     al_clear_to_color(BLACK);
 
     //planets
-    al_draw_circle(c.x, c.y, c.r, WHITE, 2);
+    al_draw_circle(a.x, a.y, a.r, WHITE, 2);
     //gravity fields
-    al_draw_circle(c.x, c.y, c.r + 0.5 * c.r, MAGENTA, 1);
+    al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
 
     //draw person
-    al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), p.xPos, p.yPos, rotateAngle(p, c), 0);
+    al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
 
-    al_draw_line(c.x, c.y, p.xPos, p.yPos, WHITE, 1.0);
+    al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 }

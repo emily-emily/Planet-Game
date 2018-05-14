@@ -12,13 +12,13 @@ const int jumpVel = 400;
 const int gVel = 20;
 
 //structures
-struct Circle{
+struct Planet{
     int x;
     int y;
     int r;
 };
 
-struct Person{
+struct Sprite{
     float xPos, yPos;
     float xVel, yVel;
     char location[30];
@@ -27,10 +27,10 @@ struct Person{
 //prototypes
 void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *character, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q);
-void draw(Circle a, Person p, ALLEGRO_BITMAP *bitmap);
-bool isGrounded(Person p, Circle c);
-void getNewCoordinates(Person &p);
-void jump(Person &p, Circle c);
-void gravity(Person &p, Circle c);
-float rotateAngle(Person p, Circle c);
+void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap);
+bool isGrounded(Sprite s, Planet a);
+void getNewCoordinates(Sprite &s);
+void jump(Sprite &s, Planet a);
+void gravity(Sprite &s, Planet a);
+float rotateAngle(Sprite s, Planet a);
 
