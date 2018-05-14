@@ -21,7 +21,6 @@ struct Planet{
 struct Sprite{
     float xPos, yPos;
     float xVel, yVel;
-    char location[30];
 };
 
 //prototypes
