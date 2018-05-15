@@ -34,6 +34,24 @@ void jump(Sprite &s, Planet a){
 
 }
 
+void shift(Sprite &s, Planet a){
+    float x, y;
+    float b;
+    x = s.xPos - a.x;
+    y = s.yPos - a.y;
+
+    b = atan(y / x);
+
+    if (x < 0){
+        s.xVel -= jumpVel * sin(b) / FPS;
+        s.yVel -= jumpVel * cos(b) / FPS;
+    }
+    else{
+        s.xVel += jumpVel * sin(b) / FPS;
+        s.yVel += jumpVel * cos(b) / FPS;
+    }
+}
+
 bool isGrounded(Sprite s, Planet a){
     float d;
     d = sqrt(pow(s.xPos - a.x, 2) + pow(s.yPos - a.y, 2));

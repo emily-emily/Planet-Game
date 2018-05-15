@@ -10,6 +10,7 @@ const int SCREEN_H = 480;
 const int FPS = 30;
 const int jumpVel = 400;
 const int gVel = 20;
+const int moveSpd = 20;
 
 //structures
 struct Planet{

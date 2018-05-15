@@ -90,7 +90,7 @@ void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
     //planets
     al_draw_circle(a.x, a.y, a.r, WHITE, 2);
     //gravity fields
-    al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
+    //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
 
     //draw person
     al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
