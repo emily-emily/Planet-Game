@@ -32,15 +32,16 @@ int main(int argc, char *argv[]){
 	al_register_event_source(q, al_get_mouse_event_source());
 
     al_start_timer(timer);
+    bool paused = false;
 
     Planet a;
-    a.r = 100;
-    a.x = 300;
-    a.y = 250;
+    a.r = 200;
+    a.x = SCREEN_W / 2;
+    a.y = SCREEN_H / 2;
 
     Sprite s;
-    s.xPos = 400;
-    s.yPos = 350;
+    s.xPos = a.x + a.r;
+    s.yPos = a.y - a.r;
     s.xVel = 0;
     s.yVel = 0;
 
@@ -56,6 +57,12 @@ int main(int argc, char *argv[]){
             if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
                 jump(s, a);
 
+            if (al_key_down(&kState, ALLEGRO_KEY_LEFT))
+                shift(s, a, LEFT);
+
+            if (al_key_down(&kState, ALLEGRO_KEY_RIGHT))
+                shift(s, a, RIGHT);
+
             getNewCoordinates(s);
             draw(a, s, character);
             al_flip_display();
@@ -65,10 +72,12 @@ int main(int argc, char *argv[]){
             running = false;
 
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-            //jump(s, a);
+            printf("Pause!");
+            togglePause(timer, paused);
         }
 
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+            //for testing
             s.xPos = ev.mouse.x;
             s.xVel = 0;
             s.yPos = ev.mouse.y;

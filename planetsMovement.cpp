@@ -4,6 +4,17 @@
 
 #include<stdio.h>
 
+void togglePause(ALLEGRO_TIMER *timer, bool paused){
+    if (paused){
+        al_start_timer(timer);
+        paused = false;
+    }
+    else{
+        al_stop_timer(timer);
+        paused = true;
+    }
+}
+
 void getNewCoordinates(Sprite &s){
     s.xPos += s.xVel;
     s.yPos += s.yVel;
@@ -34,7 +45,7 @@ void jump(Sprite &s, Planet a){
 
 }
 
-void shift(Sprite &s, Planet a){
+void shift(Sprite &s, Planet a, Direction spriteD){
     float x, y;
     float b;
     x = s.xPos - a.x;
@@ -42,13 +53,24 @@ void shift(Sprite &s, Planet a){
 
     b = atan(y / x);
 
-    if (x < 0){
-        s.xVel -= jumpVel * sin(b) / FPS;
-        s.yVel -= jumpVel * cos(b) / FPS;
-    }
+    if (spriteD == LEFT)
+        if (x > 0){
+            s.xVel += moveSpd * sin(b) / FPS;
+            s.yVel -= moveSpd * cos(b) / FPS;
+        }
+        else{
+            s.xVel -= moveSpd * sin(b) / FPS;
+            s.yVel += moveSpd * cos(b) / FPS;
+        }
     else{
-        s.xVel += jumpVel * sin(b) / FPS;
-        s.yVel += jumpVel * cos(b) / FPS;
+        if (x > 0){
+            s.xVel -= moveSpd * sin(b) / FPS;
+            s.yVel += moveSpd * cos(b) / FPS;
+        }
+        else{
+            s.xVel += moveSpd * sin(b) / FPS;
+            s.yVel -= moveSpd * cos(b) / FPS;
+        }
     }
 }
 
