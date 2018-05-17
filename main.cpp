@@ -1,12 +1,12 @@
 #include<allegro5/allegro.h>
-#include<allegro5/allegro_native_dialog.h>
-#include<allegro5/allegro_primitives.h>
+#include <time.h>
 #include "planets.h"
 
 #include<stdio.h>
 
 int main(int argc, char *argv[]){
     initializeAllegro();
+    srand(time(0));
 
     //setup
     ALLEGRO_DISPLAY *display = nullptr;
@@ -45,6 +45,15 @@ int main(int argc, char *argv[]){
     s.xVel = 0;
     s.yVel = 0;
 
+    Meteor m[maxMeteors];
+    for (int i = 0; i < maxMeteors; i++){
+        m[i].xPos = 0;
+        m[i].yPos = 0;
+        m[i].xVel = 0;
+        m[i].yVel = 0;
+        m[i].available = true;
+    }
+
     while (running){
         ALLEGRO_EVENT ev;
 
@@ -52,6 +61,7 @@ int main(int argc, char *argv[]){
         al_wait_for_event(q, &ev);
 
         if (ev.type == ALLEGRO_EVENT_TIMER){
+            createMeteor(m);
             gravity(s, a);
 
             if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
@@ -72,8 +82,10 @@ int main(int argc, char *argv[]){
             running = false;
 
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-            printf("Pause!");
-            togglePause(timer, paused);
+            if (ev.keyboard.keycode == ALLEGRO_KEY_P){
+                printf("Pause!");
+                togglePause(timer, paused);
+            }
         }
 
         if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
@@ -83,7 +95,6 @@ int main(int argc, char *argv[]){
             s.yPos = ev.mouse.y;
             s.yVel = 0;
         }
-
     }
 
     al_destroy_bitmap(character);
@@ -93,16 +104,3 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
-    al_clear_to_color(BLACK);
-
-    //planets
-    al_draw_circle(a.x, a.y, a.r, WHITE, 2);
-    //gravity fields
-    //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
-
-    //draw person
-    al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
-
-    al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
-}

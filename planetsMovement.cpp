@@ -1,18 +1,23 @@
 #include <allegro5/allegro.h>
+#include<allegro5/allegro_primitives.h>
 #include<cmath>
 #include"planets.h"
 
 #include<stdio.h>
 
-void togglePause(ALLEGRO_TIMER *timer, bool paused){
-    if (paused){
-        al_start_timer(timer);
-        paused = false;
-    }
-    else{
-        al_stop_timer(timer);
-        paused = true;
-    }
+void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
+    al_clear_to_color(BLACK);
+
+    //planets
+    al_draw_circle(a.x, a.y, a.r, WHITE, 2);
+
+    //gravity fields
+    //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
+
+    //draw person
+    al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
+
+    al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 }
 
 void getNewCoordinates(Sprite &s){
@@ -40,8 +45,8 @@ void jump(Sprite &s, Planet a){
     }
 
 
-    printf("jump s.xVel is %f\n", jumpVel * cos(b) / FPS);
-    printf("jump s.yVel is %f\n", jumpVel * sin(b) / FPS);
+    //printf("jump s.xVel is %f\n", jumpVel * cos(b) / FPS);
+    //printf("jump s.yVel is %f\n", jumpVel * sin(b) / FPS);
 
 }
 

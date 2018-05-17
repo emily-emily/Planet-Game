@@ -41,4 +41,3 @@ int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *character, ALLEGRO_TIME
 
 	return 0;
 }
-
