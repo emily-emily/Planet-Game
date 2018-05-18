@@ -5,7 +5,7 @@
 
 #include<stdio.h>
 
-void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
+void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage){
     al_clear_to_color(BLACK);
 
     //planets
@@ -16,8 +16,13 @@ void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap){
 
     //draw person
     al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
-
     al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
+
+    //draw meteors
+
+    for (int i = 0; i < maxMeteors; i++)
+        if (!m[i].available)
+            al_draw_bitmap(mImage, m[i].xPos, m[i].yPos, 0);
 }
 
 void getNewCoordinates(Sprite &s){

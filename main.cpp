@@ -12,19 +12,23 @@ int main(int argc, char *argv[]){
     ALLEGRO_DISPLAY *display = nullptr;
     ALLEGRO_TIMER *timer = nullptr;
     ALLEGRO_EVENT_QUEUE *q = nullptr;
-    ALLEGRO_BITMAP *character = nullptr;
+    ALLEGRO_BITMAP *sprite = nullptr;
+    ALLEGRO_BITMAP *mImage = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
 
     display = al_create_display(SCREEN_W, SCREEN_H);
-    character = al_load_bitmap("character.bmp");
+    sprite = al_load_bitmap("character.bmp");
+    mImage = al_load_bitmap("picture.bmp");
     timer = al_create_timer(1.0/FPS);
     q = al_create_event_queue();
 
     bool running = true;
-    if (checkSetup(display, character, timer, q) != 0)
+    if (checkSetup(display, sprite, mImage, timer, q) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
+
+    al_convert_mask_to_alpha(sprite, MAGENTA);
 
 	al_register_event_source(q, al_get_timer_event_source(timer));
 	al_register_event_source(q, al_get_display_event_source(display));
@@ -33,9 +37,10 @@ int main(int argc, char *argv[]){
 
     al_start_timer(timer);
     bool paused = false;
+    int counter = 0;
 
     Planet a;
-    a.r = 200;
+    a.r = 150;
     a.x = SCREEN_W / 2;
     a.y = SCREEN_H / 2;
 
@@ -61,7 +66,8 @@ int main(int argc, char *argv[]){
         al_wait_for_event(q, &ev);
 
         if (ev.type == ALLEGRO_EVENT_TIMER){
-            createMeteor(m);
+            if (counter == 0)
+                createMeteor(m, mImage);
             gravity(s, a);
 
             if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
@@ -74,8 +80,10 @@ int main(int argc, char *argv[]){
                 shift(s, a, RIGHT);
 
             getNewCoordinates(s);
-            draw(a, s, character);
+            draw(a, s, sprite, m, mImage);
             al_flip_display();
+
+            counter = (counter + 1) % FPS;
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -88,16 +96,16 @@ int main(int argc, char *argv[]){
             }
         }
 
-        if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+        /*if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
             //for testing
             s.xPos = ev.mouse.x;
             s.xVel = 0;
             s.yPos = ev.mouse.y;
             s.yVel = 0;
-        }
+        }*/
     }
 
-    al_destroy_bitmap(character);
+    al_destroy_bitmap(sprite);
     al_destroy_display(display);
     al_destroy_timer(timer);
 
