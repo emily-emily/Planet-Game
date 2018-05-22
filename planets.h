@@ -33,6 +33,8 @@ struct Meteor{
 };
 
 enum Direction {LEFT, RIGHT};
+enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
+//Difficulty gameDiff = BEGINNER;
 
 //prototypes
 void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage);
@@ -41,12 +43,14 @@ void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *mImage, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q);
 
 //planetsMovement
-void getNewCoordinates(Sprite &s);
+void getNewCoordinates(Sprite &s, Meteor m[]);
 void jump(Sprite &s, Planet a);
 void shift(Sprite &s, Planet a, Direction spriteD);
 bool isGrounded(Sprite s, Planet a);
-void gravity(Sprite &s, Planet a);
+bool misGrounded(Meteor m[], int i, Planet a);
+void gravity(Sprite &s, Meteor m[], Planet a);
 float rotateAngle(Sprite s, Planet a);
 
-void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
+void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
+void destroyMeteor(Meteor m[], int i);

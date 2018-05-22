@@ -1,17 +1,17 @@
 #include <allegro5/allegro.h>
-#include<allegro5/allegro_primitives.h>
-#include<cmath>
-#include"planets.h"
+#include <allegro5/allegro_primitives.h>
+#include <cmath>
+#include "planets.h"
 
 #include<stdio.h>
 
 void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage){
     al_clear_to_color(BLACK);
 
-    //planets
+    /**planets -- will change to bitmap**/
     al_draw_circle(a.x, a.y, a.r, WHITE, 2);
 
-    //gravity fields
+    //gravity fields?
     //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
 
     //draw person
@@ -19,15 +19,21 @@ void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP
     al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 
     //draw meteors
-
     for (int i = 0; i < maxMeteors; i++)
         if (!m[i].available)
             al_draw_bitmap(mImage, m[i].xPos, m[i].yPos, 0);
 }
 
-void getNewCoordinates(Sprite &s){
+void getNewCoordinates(Sprite &s, Meteor m[]){
     s.xPos += s.xVel;
     s.yPos += s.yVel;
+
+    for (int i = 0; i < maxMeteors; i++){
+        if (!m[i].available){
+            m[i].xPos += m[i].xVel;
+            m[i].yPos += m[i].yVel;
+        }
+    }
 }
 
 void jump(Sprite &s, Planet a){
@@ -94,7 +100,17 @@ bool isGrounded(Sprite s, Planet a){
     else return false;
 }
 
-void gravity(Sprite &s, Planet a){
+bool misGrounded(Meteor m[], int i, Planet a){
+    float d;
+    d = sqrt(pow(m[i].xPos - a.x, 2) + pow(m[i].yPos - a.y, 2));
+
+    if (d <= a.r){
+        return true;
+    }
+    else return false;
+}
+
+void gravity(Sprite &s, Meteor m[], Planet a){
     float x, y;
     float b;
     x = s.xPos - a.x;
@@ -114,6 +130,31 @@ void gravity(Sprite &s, Planet a){
         else{
             s.xVel += gVel * cos(b) / FPS;
             s.yVel += gVel * sin(b) / FPS;
+        }
+    }
+
+    for (int i = 0; i < maxMeteors; i++){
+        if (!m[i].available){
+            x = m[i].xPos - a.x;
+            y = m[i].yPos - a.y;
+
+            b = atan(y / x);
+
+            if (misGrounded(m, i, a)){
+                //m[i].xVel = 0;
+                //m[i].yVel = 0;
+                destroyMeteor(m, i);
+            }
+            else{
+                if (x > 0){
+                    m[i].xVel -= gVel * cos(b) / FPS / 8;
+                    m[i].yVel -= gVel * sin(b) / FPS / 8;
+                }
+                else{
+                    m[i].xVel += gVel * cos(b) / FPS / 8;
+                    m[i].yVel += gVel * sin(b) / FPS / 8;
+                }
+            }
         }
     }
 }

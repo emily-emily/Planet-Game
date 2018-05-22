@@ -1,4 +1,4 @@
-#include<allegro5/allegro.h>
+#include <allegro5/allegro.h>
 #include <time.h>
 #include "planets.h"
 
@@ -39,6 +39,7 @@ int main(int argc, char *argv[]){
     bool paused = false;
     int counter = 0;
 
+    //declare objects
     Planet a;
     a.r = 150;
     a.x = SCREEN_W / 2;
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]){
         if (ev.type == ALLEGRO_EVENT_TIMER){
             if (counter == 0)
                 createMeteor(m, mImage);
-            gravity(s, a);
+            gravity(s, m, a);
 
             if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
                 jump(s, a);
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]){
             if (al_key_down(&kState, ALLEGRO_KEY_RIGHT))
                 shift(s, a, RIGHT);
 
-            getNewCoordinates(s);
+            getNewCoordinates(s, m);
             draw(a, s, sprite, m, mImage);
             al_flip_display();
 
@@ -94,6 +95,11 @@ int main(int argc, char *argv[]){
                 printf("Pause!");
                 togglePause(timer, paused);
             }
+        }
+
+        if (ev.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT){
+            paused = false;
+            togglePause(timer, paused);
         }
 
         /*if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
@@ -111,4 +117,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-
