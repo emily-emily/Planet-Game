@@ -31,3 +31,7 @@ void createMeteor(Meteor m[], ALLEGRO_BITMAP *image){
 void destroyMeteor(Meteor m[], int i){
     m[i].available = true;
 }
+
+void gameOver(){
+
+}

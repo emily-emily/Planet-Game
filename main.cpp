@@ -80,6 +80,14 @@ int main(int argc, char *argv[]){
             if (al_key_down(&kState, ALLEGRO_KEY_RIGHT))
                 shift(s, a, RIGHT);
 
+            for (int i = 0; i < maxMeteors; i++){
+                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i],
+                                al_get_bitmap_width(mImage), al_get_bitmap_height(mImage)) && !m[i].available){
+                    togglePause(timer, paused);
+                    printf("COLLISION!\n");
+                }
+            }
+
             getNewCoordinates(s, m);
             draw(a, s, sprite, m, mImage);
             al_flip_display();

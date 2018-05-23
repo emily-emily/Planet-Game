@@ -8,7 +8,7 @@ const int SCREEN_W = 1200;
 const int SCREEN_H = 700;
 
 const int FPS = 60;
-const int jumpVel = 400;
+const int jumpVel = 600;
 const int gVel = 40;
 const int moveSpd = 20;
 
@@ -50,7 +50,9 @@ bool isGrounded(Sprite s, Planet a);
 bool misGrounded(Meteor m[], int i, Planet a);
 void gravity(Sprite &s, Meteor m[], Planet a);
 float rotateAngle(Sprite s, Planet a);
+bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
+void gameOver();

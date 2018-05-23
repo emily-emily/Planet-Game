@@ -159,15 +159,41 @@ void gravity(Sprite &s, Meteor m[], Planet a){
     }
 }
 
-float rotateAngle(Sprite p, Planet a){
+float rotateAngle(Sprite s, Planet a){
     float x, y;
     float b;
-    x = p.xPos - a.x;
-    y = p.yPos - a.y;
+    x = s.xPos - a.x;
+    y = s.yPos - a.y;
 
     b = atan(y / x);
 
     if (x < 0)
         return b - 3.1415 / 2;
     else return b + 3.1415 / 2;
+}
+
+bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh){
+    struct Shape{
+        float top;
+        float bot;
+        float left;
+        float right;
+    };
+
+    Shape sp;
+    sp.top = p.yPos;
+    sp.bot = p.yPos + sh;
+    sp.left = p.xPos;
+    sp.right = p.xPos + sw;
+
+    Shape sm;
+    sm.top = m.yPos;
+    sm.bot = m.yPos + mh;
+    sm.left = m.xPos;
+    sm.right = m.xPos + mw;
+
+    if (sp.top > sm.bot || sm.top > sp.bot || sp.left > sm.right || sp.right < sm.left){
+        return false;
+    }
+    else return true;
 }
