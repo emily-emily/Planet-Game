@@ -1,3 +1,4 @@
+#include <allegro5/allegro_font.h>
 //defined values
 #define WHITE al_map_rgb(255, 255, 255)
 #define BLACK al_map_rgb(0, 0, 0)
@@ -10,7 +11,7 @@ const int SCREEN_H = 700;
 const int FPS = 60;
 const int jumpVel = 600;
 const int gVel = 40;
-const int moveSpd = 20;
+const int moveSpd = 200;
 
 const int maxMeteors = 10;
 
@@ -24,6 +25,8 @@ struct Planet{
 struct Sprite{
     float xPos, yPos;
     float xVel, yVel;
+    float shiftX;
+    float shiftY;
 };
 
 struct Meteor{
@@ -32,15 +35,15 @@ struct Meteor{
     bool available;
 };
 
-enum Direction {LEFT, RIGHT};
+enum Direction {NONE, LEFT, RIGHT};
 enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
 //Difficulty gameDiff = BEGINNER;
 
 //prototypes
-void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage);
+void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage);
 //planetsAllegro
 void initializeAllegro();
-int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *mImage, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q);
+int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *mImage, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *f);
 
 //planetsMovement
 void getNewCoordinates(Sprite &s, Meteor m[]);
@@ -52,7 +55,9 @@ void gravity(Sprite &s, Meteor m[], Planet a);
 float rotateAngle(Sprite s, Planet a);
 bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
+//planetsGameFeats
+void drawLayout();
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
-void gameOver();
+void gameOver(ALLEGRO_TIMER *timer);

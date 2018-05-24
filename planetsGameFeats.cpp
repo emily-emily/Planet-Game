@@ -3,6 +3,11 @@
 
 #include <stdio.h>
 
+//draws background etc
+void drawLayout(){
+    al_clear_to_color(BLACK);
+}
+
 void togglePause(ALLEGRO_TIMER *timer, bool &paused){
     if (paused){
         al_start_timer(timer);
@@ -22,7 +27,8 @@ void createMeteor(Meteor m[], ALLEGRO_BITMAP *image){
     if (m[i].available){
         m[i].xPos = rand() % SCREEN_W;
         m[i].yPos = rand() % SCREEN_H;
-        m[i].xVel = 0; //to overwrite destroyed meteor info
+        //overwrite destroyed meteor info
+        m[i].xVel = 0;
         m[i].yVel = 0;
         m[i].available = false;
     }
@@ -32,6 +38,6 @@ void destroyMeteor(Meteor m[], int i){
     m[i].available = true;
 }
 
-void gameOver(){
-
+void gameOver(ALLEGRO_TIMER *timer){
+    al_stop_timer(timer);
 }

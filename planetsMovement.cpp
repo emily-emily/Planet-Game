@@ -5,9 +5,8 @@
 
 #include<stdio.h>
 
-void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage){
-    al_clear_to_color(BLACK);
-
+//draws objects
+void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage){
     /**planets -- will change to bitmap**/
     al_draw_circle(a.x, a.y, a.r, WHITE, 2);
 
@@ -24,9 +23,10 @@ void draw(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP
             al_draw_bitmap(mImage, m[i].xPos, m[i].yPos, 0);
 }
 
+//calculate new locations of objects
 void getNewCoordinates(Sprite &s, Meteor m[]){
-    s.xPos += s.xVel;
-    s.yPos += s.yVel;
+    s.xPos += s.xVel + s.shiftX;
+    s.yPos += s.yVel + s.shiftY;
 
     for (int i = 0; i < maxMeteors; i++){
         if (!m[i].available){
@@ -61,6 +61,7 @@ void jump(Sprite &s, Planet a){
 
 }
 
+//left-right movement for sprite (relative to planet)
 void shift(Sprite &s, Planet a, Direction spriteD){
     float x, y;
     float b;
@@ -69,27 +70,33 @@ void shift(Sprite &s, Planet a, Direction spriteD){
 
     b = atan(y / x);
 
-    if (spriteD == LEFT)
+    if (spriteD == LEFT){
         if (x > 0){
-            s.xVel += moveSpd * sin(b) / FPS;
-            s.yVel -= moveSpd * cos(b) / FPS;
+            s.shiftX = moveSpd * sin(b) / FPS;
+            s.shiftY = -(moveSpd * cos(b) / FPS);
         }
         else{
-            s.xVel -= moveSpd * sin(b) / FPS;
-            s.yVel += moveSpd * cos(b) / FPS;
+            s.shiftX = -(moveSpd * sin(b) / FPS);
+            s.shiftY = moveSpd * cos(b) / FPS;
         }
+    }
+    else if (spriteD == RIGHT){
+        if (x > 0){
+            s.shiftX = -(moveSpd * sin(b) / FPS);
+            s.shiftY = moveSpd * cos(b) / FPS;
+        }
+        else{
+            s.shiftX = moveSpd * sin(b) / FPS;
+            s.shiftY = -(moveSpd * cos(b) / FPS);
+        }
+    }
     else{
-        if (x > 0){
-            s.xVel -= moveSpd * sin(b) / FPS;
-            s.yVel += moveSpd * cos(b) / FPS;
-        }
-        else{
-            s.xVel += moveSpd * sin(b) / FPS;
-            s.yVel -= moveSpd * cos(b) / FPS;
-        }
+        s.shiftX = 0;
+        s.shiftY = 0;
     }
 }
 
+//returns true/false for if sprite is on the surface of planet
 bool isGrounded(Sprite s, Planet a){
     float d;
     d = sqrt(pow(s.xPos - a.x, 2) + pow(s.yPos - a.y, 2));
@@ -100,6 +107,7 @@ bool isGrounded(Sprite s, Planet a){
     else return false;
 }
 
+//isGrounded function for meteors
 bool misGrounded(Meteor m[], int i, Planet a){
     float d;
     d = sqrt(pow(m[i].xPos - a.x, 2) + pow(m[i].yPos - a.y, 2));
@@ -110,6 +118,7 @@ bool misGrounded(Meteor m[], int i, Planet a){
     else return false;
 }
 
+//applies gravity to all objects
 void gravity(Sprite &s, Meteor m[], Planet a){
     float x, y;
     float b;
@@ -141,8 +150,6 @@ void gravity(Sprite &s, Meteor m[], Planet a){
             b = atan(y / x);
 
             if (misGrounded(m, i, a)){
-                //m[i].xVel = 0;
-                //m[i].yVel = 0;
                 destroyMeteor(m, i);
             }
             else{
