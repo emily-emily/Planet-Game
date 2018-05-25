@@ -3,6 +3,7 @@
 #define WHITE al_map_rgb(255, 255, 255)
 #define BLACK al_map_rgb(0, 0, 0)
 #define MAGENTA al_map_rgb(240, 50, 230)
+#define RED al_map_rgb(255, 0, 0)
 
 //constant values
 const int SCREEN_W = 1200;
@@ -32,6 +33,7 @@ struct Sprite{
 struct Meteor{
     float xPos, yPos;
     float xVel, yVel;
+    int w, h;
     bool available;
 };
 
@@ -53,10 +55,10 @@ bool isGrounded(Sprite s, Planet a);
 bool misGrounded(Meteor m[], int i, Planet a);
 void gravity(Sprite &s, Meteor m[], Planet a);
 float rotateAngle(Sprite s, Planet a);
-bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
+bool isCollision(Sprite p, int sw, int sh, Meteor m);
 
 //planetsGameFeats
-void drawLayout();
+void drawLayout(ALLEGRO_FONT *font, float score);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);

@@ -23,9 +23,9 @@ int main(int argc, char *argv[]){
     display = al_create_display(SCREEN_W, SCREEN_H);
     timer = al_create_timer(1.0/FPS);
     q = al_create_event_queue();
-    sprite = al_load_bitmap("character.bmp");
-    mImage = al_load_bitmap("picture.bmp");
-    font = al_load_ttf_font("comic.ttf", 35, 0);
+    sprite = al_load_bitmap("images/character.bmp");
+    mImage = al_load_bitmap("images/meteor.png");
+    font = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
 
     bool running = true;
     if (checkSetup(display, sprite, mImage, timer, q, font) != 0)
@@ -61,6 +61,8 @@ int main(int argc, char *argv[]){
         m[i].yPos = 0;
         m[i].xVel = 0;
         m[i].yVel = 0;
+        m[i].w = al_get_bitmap_width(mImage);
+        m[i].h = al_get_bitmap_height(mImage);
         m[i].available = true;
     }
 
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]){
     al_start_timer(timer);
     bool paused = false;
     int counter = 0; //counts loops for meteors to spawn once a second
-    int score = 0;
+    float score = 0.0;
 
     while (running){
         ALLEGRO_EVENT ev;
@@ -95,8 +97,7 @@ int main(int argc, char *argv[]){
 
             //check sprite-meteor collision
             for (int i = 0; i < maxMeteors; i++){
-                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i],
-                                al_get_bitmap_width(mImage), al_get_bitmap_height(mImage)) && !m[i].available){
+                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i]) && !m[i].available){
                     /*** will change ***/
                     togglePause(timer, paused);
                     //gameOver(timer);
@@ -105,11 +106,12 @@ int main(int argc, char *argv[]){
 
             //update new object locations and draw
             getNewCoordinates(s, m);
-            drawLayout();
+            drawLayout(font, score);
             drawObjects(a, s, sprite, m, mImage);
             al_flip_display();
 
             counter = (counter + 1) % FPS;
+            score += 1.0 / FPS;
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)

@@ -6,7 +6,7 @@
 #include<stdio.h>
 
 //draws objects
-void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage){
+void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *sprite, Meteor m[], ALLEGRO_BITMAP *mImage){
     /**planets -- will change to bitmap**/
     al_draw_circle(a.x, a.y, a.r, WHITE, 2);
 
@@ -14,13 +14,14 @@ void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO
     //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
 
     //draw person
-    al_draw_rotated_bitmap(bitmap, al_get_bitmap_width(bitmap) / 2, al_get_bitmap_height(bitmap), s.xPos, s.yPos, rotateAngle(s, a), 0);
+    al_draw_rotated_bitmap(sprite, al_get_bitmap_width(sprite) / 2, al_get_bitmap_height(sprite), s.xPos, s.yPos, rotateAngle(s, a), 0);
     al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 
     //draw meteors
     for (int i = 0; i < maxMeteors; i++)
-        if (!m[i].available)
-            al_draw_bitmap(mImage, m[i].xPos, m[i].yPos, 0);
+        if (!m[i].available){
+            al_draw_scaled_rotated_bitmap(mImage, m[i].w / 2, m[i].h - (m[i].w / 2), m[i].xPos, m[i].yPos, .1, .1, 0, 0);
+        }
 }
 
 //calculate new locations of objects
@@ -179,7 +180,7 @@ float rotateAngle(Sprite s, Planet a){
     else return b + 3.1415 / 2;
 }
 
-bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh){
+bool isCollision(Sprite p, int sw, int sh, Meteor m){
     struct Shape{
         float top;
         float bot;
@@ -194,10 +195,16 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh){
     sp.right = p.xPos + sw;
 
     Shape sm;
-    sm.top = m.yPos;
-    sm.bot = m.yPos + mh;
-    sm.left = m.xPos;
-    sm.right = m.xPos + mw;
+    sm.top = m.yPos - m.w / 2;
+    sm.bot = m.yPos + m.w / 2;
+    sm.left = m.xPos - m.w / 2;
+    sm.right = m.xPos + m.w / 2;
+/*
+    printf("Meteor pos:(%d, %d)\n", (int) m.xPos, (int) m.yPos);
+    printf("Top: %d\n", sm.top);
+    printf("Bot: %d\n", sm.bot);
+    printf("Left: %d\n", sm.left);
+    printf("Right: %d\n", sm.right);*/
 
     if (sp.top > sm.bot || sm.top > sp.bot || sp.left > sm.right || sp.right < sm.left){
         return false;

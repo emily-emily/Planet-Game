@@ -4,8 +4,12 @@
 #include <stdio.h>
 
 //draws background etc
-void drawLayout(){
+void drawLayout(ALLEGRO_FONT *font, float score){
+    //background
     al_clear_to_color(BLACK);
+
+    //score
+    al_draw_textf(font, WHITE, SCREEN_W - 150, 0, 0, "SCORE: %d", (int) score);
 }
 
 void togglePause(ALLEGRO_TIMER *timer, bool &paused){

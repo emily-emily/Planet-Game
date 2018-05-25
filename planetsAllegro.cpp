@@ -39,11 +39,11 @@ int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP 
       	return -1;
 	}
 
-	/*if (!f) {
+	if (!f) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to load font!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(display);
       	return -1;
-	}*/
+	}
 
 	return 0;
 }
