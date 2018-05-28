@@ -1,3 +1,7 @@
+/*Emily Yu
+ICS3U P4
+May 2018*/
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <cmath>
@@ -6,9 +10,10 @@
 #include<stdio.h>
 
 //draws objects
-void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *sprite, Meteor m[], ALLEGRO_BITMAP *mImage){
-    /**planets -- will change to bitmap**/
+void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite, Meteor m[], ALLEGRO_BITMAP *mImage){
+    //draws planet at the center of the screen
     al_draw_circle(a.x, a.y, a.r, WHITE, 2);
+    al_draw_scaled_bitmap(planet, 0, 0, al_get_bitmap_width(planet), al_get_bitmap_height(planet), SCREEN_W / 2 - a.r, SCREEN_H / 2 - a.r, a.r * 2, a.r * 2, 0);
 
     //gravity fields?
     //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
@@ -20,7 +25,7 @@ void drawObjects(Planet a, Sprite s, ALLEGRO_BITMAP *sprite, Meteor m[], ALLEGRO
     //draw meteors
     for (int i = 0; i < maxMeteors; i++)
         if (!m[i].available){
-            al_draw_scaled_rotated_bitmap(mImage, m[i].w / 2, m[i].h - (m[i].w / 2), m[i].xPos, m[i].yPos, .1, .1, 0, 0);
+            al_draw_scaled_rotated_bitmap(mImage, m[i].w / 2, m[i].h - (m[i].w / 2), m[i].xPos, m[i].yPos, imageScale, imageScale, 0, 0);
         }
 }
 
@@ -180,7 +185,7 @@ float rotateAngle(Sprite s, Planet a){
     else return b + 3.1415 / 2;
 }
 
-bool isCollision(Sprite p, int sw, int sh, Meteor m){
+bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh){
     struct Shape{
         float top;
         float bot;
@@ -195,10 +200,10 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m){
     sp.right = p.xPos + sw;
 
     Shape sm;
-    sm.top = m.yPos - m.w / 2;
-    sm.bot = m.yPos + m.w / 2;
-    sm.left = m.xPos - m.w / 2;
-    sm.right = m.xPos + m.w / 2;
+    sm.top = m.yPos;
+    sm.bot = m.yPos + mh;
+    sm.left = m.xPos;
+    sm.right = m.xPos + mw;
 /*
     printf("Meteor pos:(%d, %d)\n", (int) m.xPos, (int) m.yPos);
     printf("Top: %d\n", sm.top);

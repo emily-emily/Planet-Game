@@ -1,12 +1,16 @@
+/*Emily Yu
+ICS3U P4
+May 2018*/
+
 #include <allegro5/allegro.h>
 #include "planets.h"
 
 #include <stdio.h>
 
 //draws background etc
-void drawLayout(ALLEGRO_FONT *font, float score){
+void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, float score){
     //background
-    al_clear_to_color(BLACK);
+    al_draw_scaled_bitmap(background, 0, 0, al_get_bitmap_width(background), al_get_bitmap_height(background), 0, 0, SCREEN_W, SCREEN_H, 0);
 
     //score
     al_draw_textf(font, WHITE, SCREEN_W - 150, 0, 0, "SCORE: %d", (int) score);

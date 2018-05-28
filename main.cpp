@@ -1,3 +1,8 @@
+/*Emily Yu
+ICS3U P4
+May 2018
+Planets Project - ICS3U Summative*/
+
 #include <allegro5/allegro.h>
 #include <time.h>
 #include <allegro5/allegro_font.h>
@@ -16,6 +21,8 @@ int main(int argc, char *argv[]){
     ALLEGRO_EVENT_QUEUE *q = nullptr;
     ALLEGRO_BITMAP *sprite = nullptr;
     ALLEGRO_BITMAP *mImage = nullptr;
+    ALLEGRO_BITMAP *background = nullptr;
+    ALLEGRO_BITMAP *planet = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
     ALLEGRO_FONT *font = nullptr;
 
@@ -23,12 +30,14 @@ int main(int argc, char *argv[]){
     display = al_create_display(SCREEN_W, SCREEN_H);
     timer = al_create_timer(1.0/FPS);
     q = al_create_event_queue();
-    sprite = al_load_bitmap("images/character.bmp");
-    mImage = al_load_bitmap("images/meteor.png");
+    sprite = al_load_bitmap("images/characterV1.bmp");
+    mImage = al_load_bitmap("images/meteorV3.png");
+    background = al_load_bitmap("images/background.png");
+    planet = al_load_bitmap("images/planet.png");
     font = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
 
     bool running = true;
-    if (checkSetup(display, sprite, mImage, timer, q, font) != 0)
+    if (checkSetup(display, sprite, mImage, background, planet, timer, q, font) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -97,7 +106,8 @@ int main(int argc, char *argv[]){
 
             //check sprite-meteor collision
             for (int i = 0; i < maxMeteors; i++){
-                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i]) && !m[i].available){
+                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i],
+                                al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
                     /*** will change ***/
                     togglePause(timer, paused);
                     //gameOver(timer);
@@ -106,8 +116,8 @@ int main(int argc, char *argv[]){
 
             //update new object locations and draw
             getNewCoordinates(s, m);
-            drawLayout(font, score);
-            drawObjects(a, s, sprite, m, mImage);
+            drawLayout(background, font, score);
+            drawObjects(planet, a, s, sprite, m, mImage);
             al_flip_display();
 
             counter = (counter + 1) % FPS;
