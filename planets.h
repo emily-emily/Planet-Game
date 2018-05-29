@@ -14,7 +14,7 @@ const int SCREEN_W = 1200;
 const int SCREEN_H = 700;
 
 const int FPS = 60;
-const int jumpVel = 600;
+const int jumpVel = 800;
 const int gVel = 40;
 const int moveSpd = 200;
 
@@ -33,6 +33,9 @@ struct Sprite{
     float xVel, yVel;
     float shiftX;
     float shiftY;
+    int frame;
+    int dir; //0 left, 1 right
+    bool airborne;
 };
 
 struct Meteor{
@@ -43,17 +46,18 @@ struct Meteor{
 };
 
 enum Direction {NONE, LEFT, RIGHT};
-enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
+//enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
 //Difficulty gameDiff = BEGINNER;
 
 //prototypes
-void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *bitmap, Meteor m[], ALLEGRO_BITMAP *mImage);
+
 //planetsAllegro
 void initializeAllegro();
-int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
+int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
                ALLEGRO_BITMAP *planet, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *f);
 
 //planetsMovement
+void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage);
 void getNewCoordinates(Sprite &s, Meteor m[]);
 void jump(Sprite &s, Planet a);
 void shift(Sprite &s, Planet a, Direction spriteD);
@@ -68,4 +72,5 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_FONT *font, float score);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
-void gameOver(ALLEGRO_TIMER *timer);
+void gameOver(ALLEGRO_TIMER *timer, bool &running);
+void getHighscores(ALLEGRO_DISPLAY *display);

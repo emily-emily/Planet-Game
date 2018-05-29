@@ -3,6 +3,7 @@ ICS3U P4
 May 2018*/
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_native_dialog.h>
 #include "planets.h"
 
 #include <stdio.h>
@@ -46,6 +47,17 @@ void destroyMeteor(Meteor m[], int i){
     m[i].available = true;
 }
 
-void gameOver(ALLEGRO_TIMER *timer){
+void gameOver(ALLEGRO_TIMER *timer, bool &running){
     al_stop_timer(timer);
+    running = false;
+}
+
+void getHighscores(ALLEGRO_DISPLAY *display){
+    FILE *fptr;
+    fptr = fopen("highscores.txt", "r");
+
+    if (fptr == NULL)
+        al_show_native_message_box(display, "Error", "Error loading file", "Highscores file could not be opened.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+
+    fclose(fptr);
 }

@@ -10,17 +10,20 @@ May 2018*/
 #include<stdio.h>
 
 //draws objects
-void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite, Meteor m[], ALLEGRO_BITMAP *mImage){
+void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage){
     //draws planet at the center of the screen
-    al_draw_circle(a.x, a.y, a.r, WHITE, 2);
+    //al_draw_circle(a.x, a.y, a.r, WHITE, 2);
     al_draw_scaled_bitmap(planet, 0, 0, al_get_bitmap_width(planet), al_get_bitmap_height(planet), SCREEN_W / 2 - a.r, SCREEN_H / 2 - a.r, a.r * 2, a.r * 2, 0);
 
-    //gravity fields?
+    /**gravity fields?**/
     //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
 
-    //draw person
-    al_draw_rotated_bitmap(sprite, al_get_bitmap_width(sprite) / 2, al_get_bitmap_height(sprite), s.xPos, s.yPos, rotateAngle(s, a), 0);
-    al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
+    //draw sprite
+    al_draw_scaled_rotated_bitmap(sprite[s.frame], al_get_bitmap_width(sprite[s.frame]) / 2, al_get_bitmap_height(sprite[s.frame]),
+                                  s.xPos, s.yPos, imageScale, imageScale, rotateAngle(s, a), ALLEGRO_FLIP_HORIZONTAL - s.dir);
+
+    //for testing
+    //al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 
     //draw meteors
     for (int i = 0; i < maxMeteors; i++)
@@ -77,6 +80,7 @@ void shift(Sprite &s, Planet a, Direction spriteD){
     b = atan(y / x);
 
     if (spriteD == LEFT){
+        s.dir = 0;
         if (x > 0){
             s.shiftX = moveSpd * sin(b) / FPS;
             s.shiftY = -(moveSpd * cos(b) / FPS);
@@ -87,6 +91,7 @@ void shift(Sprite &s, Planet a, Direction spriteD){
         }
     }
     else if (spriteD == RIGHT){
+        s.dir = 1;
         if (x > 0){
             s.shiftX = -(moveSpd * sin(b) / FPS);
             s.shiftY = moveSpd * cos(b) / FPS;
@@ -134,10 +139,12 @@ void gravity(Sprite &s, Meteor m[], Planet a){
     b = atan(y / x);
 
     if (isGrounded(s, a)){
+        s.airborne = false;
         s.xVel = 0;
         s.yVel = 0;
     }
     else{
+        s.airborne = true;
         if (x > 0){
             s.xVel -= gVel * cos(b) / FPS;
             s.yVel -= gVel * sin(b) / FPS;

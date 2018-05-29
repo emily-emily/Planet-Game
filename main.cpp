@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
     ALLEGRO_DISPLAY *display = nullptr;
     ALLEGRO_TIMER *timer = nullptr;
     ALLEGRO_EVENT_QUEUE *q = nullptr;
-    ALLEGRO_BITMAP *sprite = nullptr;
+    ALLEGRO_BITMAP *sprite[8] = {nullptr};
     ALLEGRO_BITMAP *mImage = nullptr;
     ALLEGRO_BITMAP *background = nullptr;
     ALLEGRO_BITMAP *planet = nullptr;
@@ -30,19 +30,23 @@ int main(int argc, char *argv[]){
     display = al_create_display(SCREEN_W, SCREEN_H);
     timer = al_create_timer(1.0/FPS);
     q = al_create_event_queue();
-    sprite = al_load_bitmap("images/characterV1.bmp");
+    sprite[0] = al_load_bitmap("images/characters/character1.png");
+    sprite[1] = al_load_bitmap("images/characters/character2.png");
+    sprite[2] = al_load_bitmap("images/characters/character3.png");
+    sprite[3] = al_load_bitmap("images/characters/character4.png");
+    sprite[4] = al_load_bitmap("images/characters/character5.png");
+    sprite[5] = al_load_bitmap("images/characters/character6.png");
+    sprite[6] = al_load_bitmap("images/characters/character7.png");
+    sprite[7] = al_load_bitmap("images/characters/character8.png");
     mImage = al_load_bitmap("images/meteorV3.png");
     background = al_load_bitmap("images/background.png");
     planet = al_load_bitmap("images/planet.png");
     font = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
 
-    bool running = true;
     if (checkSetup(display, sprite, mImage, background, planet, timer, q, font) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
-/*******************************************************************************************************/
-    al_convert_mask_to_alpha(sprite, MAGENTA);
 
     //register event sources
 	al_register_event_source(q, al_get_timer_event_source(timer));
@@ -63,6 +67,9 @@ int main(int argc, char *argv[]){
     s.yVel = 0.0;
     s.shiftX = 0.0;
     s.shiftY = 0.0;
+    s.frame = 0;
+    s.dir = 1;
+    s.airborne = false;
 
     Meteor m[maxMeteors];
     for (int i = 0; i < maxMeteors; i++){
@@ -80,7 +87,12 @@ int main(int argc, char *argv[]){
     bool paused = false;
     int counter = 0; //counts loops for meteors to spawn once a second
     float score = 0.0;
+    bool running = true;
+    int highscores[10] = {0};
 
+    //start screen
+
+    //game loop
     while (running){
         ALLEGRO_EVENT ev;
 
@@ -106,11 +118,11 @@ int main(int argc, char *argv[]){
 
             //check sprite-meteor collision
             for (int i = 0; i < maxMeteors; i++){
-                if (isCollision(s, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite), m[i],
+                if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                 al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
                     /*** will change ***/
                     togglePause(timer, paused);
-                    //gameOver(timer);
+                    //gameOver(timer, running);
                 }
             }
 
@@ -121,7 +133,7 @@ int main(int argc, char *argv[]){
             al_flip_display();
 
             counter = (counter + 1) % FPS;
-            score += 1.0 / FPS;
+            score += 10.0 / FPS;
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -148,8 +160,12 @@ int main(int argc, char *argv[]){
         }*/
     }
 
+    //game over screen
+    //getHighscores(display);
+
     //destroy and release data
-    al_destroy_bitmap(sprite);
+    for (int i = 0; i < 8; i++)
+        al_destroy_bitmap(sprite[i]);
     al_destroy_display(display);
     al_destroy_timer(timer);
     al_destroy_font(font);

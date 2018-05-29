@@ -19,17 +19,19 @@ void initializeAllegro(){
     al_install_mouse();
 }
 
-int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite, ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
+int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
                ALLEGRO_BITMAP *planet, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *f){
     if (!display){
         al_show_native_message_box(display, "Error", "Error", "Failed to initialize display!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
         return -1;
     }
 
-    if (!sprite || !mImage || !background || !planet){
-        al_show_native_message_box(display, "Error", "Error", "Failed to load image!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
-    	al_destroy_display(display);
-    	return -1;
+    for (int i = 0; i < 8; i++){
+        if (!sprite[i] || !mImage || !background || !planet){
+            al_show_native_message_box(display, "Error", "Error", "Failed to load image!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
+            al_destroy_display(display);
+            return -1;
+        }
     }
 
     if (!timer) {
