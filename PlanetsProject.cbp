@@ -35,7 +35,6 @@
 		<Unit filename="PlanetsProject.cbp" />
 		<Unit filename="PlanetsProject.depend" />
 		<Unit filename="allegro_monolith-5.2.dll" />
-		<Unit filename="character.bmp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="planets.h" />
 		<Unit filename="planetsAllegro.cpp" />

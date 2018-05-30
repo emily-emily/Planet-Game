@@ -23,8 +23,10 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP *mImage = nullptr;
     ALLEGRO_BITMAP *background = nullptr;
     ALLEGRO_BITMAP *planet = nullptr;
+    ALLEGRO_BITMAP *box = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
-    ALLEGRO_FONT *font = nullptr;
+    ALLEGRO_FONT *bodyFont = nullptr;
+    ALLEGRO_FONT *titleFont = nullptr;
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -41,9 +43,11 @@ int main(int argc, char *argv[]){
     mImage = al_load_bitmap("images/meteorV3.png");
     background = al_load_bitmap("images/background.png");
     planet = al_load_bitmap("images/planet.png");
-    font = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
+    box = al_load_bitmap("images/box.png");
+    bodyFont = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
+    titleFont = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80, 0);
 
-    if (checkSetup(display, sprite, mImage, background, planet, timer, q, font) != 0)
+    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, bodyFont, titleFont) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -86,11 +90,11 @@ int main(int argc, char *argv[]){
     al_start_timer(timer);
     bool paused = false;
     int counter = 0; //counts loops for meteors to spawn once a second
+    int iFlash = 0; //for text on start screen
     float score = 0.0;
     bool running = true;
     int highscores[10] = {0};
-
-    //start screen
+    Screen scr = START;
 
     //game loop
     while (running){
@@ -99,65 +103,85 @@ int main(int argc, char *argv[]){
         al_get_keyboard_state(&kState);
         al_wait_for_event(q, &ev);
 
-        if (ev.type == ALLEGRO_EVENT_TIMER){
-            //spawn a meteor once a second
-            if (counter == 0)
-                createMeteor(m, mImage);
-            //apply gravity
-            gravity(s, m, a);
+        //start screen
+        if (scr == START){
+            if (ev.type == ALLEGRO_EVENT_TIMER){
+                drawLayout(background, box, START, bodyFont, score);
+                drawStart(titleFont, bodyFont, iFlash);
+                al_flip_display();
+                iFlash = (iFlash + 1) % FPS;
+            }
+            if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE)
+                scr = GAME;
+        }
 
-            //movement
-            if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
-                jump(s, a);
+        //gameplay
+        if (scr == GAME){
+            if (ev.type == ALLEGRO_EVENT_TIMER){
+                //spawn a meteor once a second
+                if (counter == 0)
+                    createMeteor(m, mImage);
+                //apply gravity
+                gravity(s, m, a);
 
-            if (al_key_down(&kState, ALLEGRO_KEY_LEFT))
-                shift(s, a, LEFT);
-            else if (al_key_down(&kState, ALLEGRO_KEY_RIGHT))
-                shift(s, a, RIGHT);
-            else shift(s, a, NONE);
+                //movement
+                if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
+                    jump(s, a);
 
-            //check sprite-meteor collision
-            for (int i = 0; i < maxMeteors; i++){
-                if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
-                                al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
-                    /*** will change ***/
+                if (al_key_down(&kState, ALLEGRO_KEY_LEFT))
+                    shift(s, a, LEFT);
+                else if (al_key_down(&kState, ALLEGRO_KEY_RIGHT))
+                    shift(s, a, RIGHT);
+                else shift(s, a, NONE);
+
+                //check sprite-meteor collision
+                for (int i = 0; i < maxMeteors; i++){
+                    if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
+                                    al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
+                        /*** will change ***/
+                        togglePause(timer, paused);
+                        //scr = GAMEOVER;
+                    }
+                }
+
+                //update new object locations and draw
+                getNewCoordinates(s, m);
+                drawLayout(background, box, GAME, bodyFont, score);
+                drawObjects(planet, a, s, sprite, m, mImage);
+                al_flip_display();
+
+                counter = (counter + 1) % FPS;
+                score += 10.0 / FPS;
+            }
+
+            if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
+                if (ev.keyboard.keycode == ALLEGRO_KEY_P){
+                    printf("Pause!");
                     togglePause(timer, paused);
-                    //gameOver(timer, running);
                 }
             }
 
-            //update new object locations and draw
-            getNewCoordinates(s, m);
-            drawLayout(background, font, score);
-            drawObjects(planet, a, s, sprite, m, mImage);
-            al_flip_display();
+            if (ev.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT){
+                paused = false;
+                togglePause(timer, paused);
+            }
 
-            counter = (counter + 1) % FPS;
-            score += 10.0 / FPS;
+            /*if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+                //for testing
+                s.xPos = ev.mouse.x;
+                s.xVel = 0;
+                s.yPos = ev.mouse.y;
+                s.yVel = 0;
+            }*/
+        }
+
+        //game over screen
+        if (scr == GAMEOVER){
+
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             running = false;
-
-        if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-            if (ev.keyboard.keycode == ALLEGRO_KEY_P){
-                printf("Pause!");
-                togglePause(timer, paused);
-            }
-        }
-
-        if (ev.type == ALLEGRO_EVENT_DISPLAY_SWITCH_OUT){
-            paused = false;
-            togglePause(timer, paused);
-        }
-
-        /*if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-            //for testing
-            s.xPos = ev.mouse.x;
-            s.xVel = 0;
-            s.yPos = ev.mouse.y;
-            s.yVel = 0;
-        }*/
     }
 
     //game over screen
@@ -168,7 +192,7 @@ int main(int argc, char *argv[]){
         al_destroy_bitmap(sprite[i]);
     al_destroy_display(display);
     al_destroy_timer(timer);
-    al_destroy_font(font);
+    al_destroy_font(bodyFont);
 
     return 0;
 }
