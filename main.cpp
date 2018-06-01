@@ -25,8 +25,7 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP *planet = nullptr;
     ALLEGRO_BITMAP *box = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
-    ALLEGRO_FONT *bodyFont = nullptr;
-    ALLEGRO_FONT *titleFont = nullptr;
+    ALLEGRO_FONT *font[iFonts] = {nullptr};
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -44,10 +43,10 @@ int main(int argc, char *argv[]){
     background = al_load_bitmap("images/background.png");
     planet = al_load_bitmap("images/planet.png");
     box = al_load_bitmap("images/box.png");
-    bodyFont = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 20, 0);
-    titleFont = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80, 0);
+    for (int i = 0; i < iFonts; i++)
+        font[i] = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80 - 10 * i, 0);
 
-    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, bodyFont, titleFont) != 0)
+    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -94,7 +93,7 @@ int main(int argc, char *argv[]){
     float score = 0.0;
     bool running = true;
     int highscores[10] = {0};
-    Screen scr = START;
+    Screen scr = HIGHSCORES;
 
     //game loop
     while (running){
@@ -106,8 +105,8 @@ int main(int argc, char *argv[]){
         //start screen
         if (scr == START){
             if (ev.type == ALLEGRO_EVENT_TIMER){
-                drawLayout(background, box, START, bodyFont, score);
-                drawStart(titleFont, bodyFont, iFlash);
+                drawLayout(background, box, START, font[6], score);
+                drawStart(font[0], font[6], iFlash);
                 al_flip_display();
                 iFlash = (iFlash + 1) % FPS;
             }
@@ -139,18 +138,18 @@ int main(int argc, char *argv[]){
                     if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                     al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
                         /*** will change ***/
-                        togglePause(timer, paused);
-                        //scr = GAMEOVER;
+                        //togglePause(timer, paused);
+                        scr = GAMEOVER;
                     }
                 }
 
                 //update new object locations and draw
                 getNewCoordinates(s, m);
-                drawLayout(background, box, GAME, bodyFont, score);
+                drawLayout(background, box, GAME, font[2], score);
                 drawObjects(planet, a, s, sprite, m, mImage);
                 al_flip_display();
 
-                counter = (counter + 1) % FPS;
+                counter = (counter + 2) % FPS;
                 score += 10.0 / FPS;
             }
 
@@ -177,22 +176,32 @@ int main(int argc, char *argv[]){
 
         //game over screen
         if (scr == GAMEOVER){
+            if (ev.type == ALLEGRO_EVENT_TIMER){
+                drawLayout(background, box, GAMEOVER, font[6], score);
+                drawGameOver(font[3]);
+                al_flip_display();
+            }
+        }
 
+        if (scr == HIGHSCORES){
+            if (ev.type == ALLEGRO_EVENT_TIMER){
+                drawLayout(background, box, HIGHSCORES, font[6], score);
+                drawHighscores(font);
+                al_flip_display();
+            }
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             running = false;
     }
 
-    //game over screen
-    //getHighscores(display);
-
     //destroy and release data
     for (int i = 0; i < 8; i++)
         al_destroy_bitmap(sprite[i]);
     al_destroy_display(display);
     al_destroy_timer(timer);
-    al_destroy_font(bodyFont);
+    for (int i = 0; i < iFonts; i++)
+        al_destroy_font(font[i]);
 
     return 0;
 }

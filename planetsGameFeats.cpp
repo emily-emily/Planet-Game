@@ -4,6 +4,7 @@ May 2018*/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
+#include <allegro5/allegro_primitives.h>
 #include "planets.h"
 
 #include <stdio.h>
@@ -24,6 +25,42 @@ void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash){
     al_draw_text(tf, WHITE, (SCREEN_W - al_get_text_width(tf, "GAME TITLE")) / 2, 250, 0, "GAME TITLE");
     if (iFlash > 20)
         al_draw_text(bf, WHITE, (SCREEN_W - al_get_text_width(bf, "- Press space to continue -")) / 2, SCREEN_H - 100, 0, "- Press space to continue -");
+}
+
+void drawGameOver(ALLEGRO_FONT *tf){
+    al_draw_text(tf, WHITE, (SCREEN_W - al_get_text_width(tf, "GAME OVER")) / 2, 200, 0, "GAME OVER");
+}
+
+void drawHighscores(ALLEGRO_FONT *font[]){
+    char name[10][10];
+    int score[10] = {NULL};
+    FILE *fptr;
+    fptr = fopen("highscores.txt", "r");
+
+    if (!fptr)
+        printf("error");
+    al_draw_text(font[3], WHITE,(SCREEN_W - al_get_text_width(font[3], "HIGHSCORES")) / 2, 100, 0, "HIGHSCORES");
+
+    //draw boxes?
+    al_draw_rectangle(100, 180, SCREEN_W / 2 - 30, SCREEN_H - 150, WHITE, 2);
+    al_draw_rectangle(SCREEN_W / 2 + 30, 180, SCREEN_W - 100, SCREEN_H - 150, WHITE, 2);
+
+    for (int i = 0; i < 10; i++){
+        fscanf(fptr, "%s", name[i]);
+        fscanf(fptr, "%d", &score[i]);
+    }
+
+    for (int i = 0; i < 5; i++){
+        al_draw_textf(font[5], WHITE, 125, 200 + 72 * i, 0, "%s", name[i]);
+        al_draw_textf(font[5], WHITE, 375, 200 + 72 * i, 0, "%d", score[i]);
+    }
+
+    for (int i = 5; i < 10; i++){
+        al_draw_textf(font[5], WHITE, SCREEN_W / 2 + 55, 200 + 72 * (i - 5), 0, "%s", name[i]);
+        al_draw_textf(font[5], WHITE, SCREEN_W / 2 + 305, 200 + 72 * (i - 5), 0, "%d", score[i]);
+    }
+
+    fclose(fptr);
 }
 
 void togglePause(ALLEGRO_TIMER *timer, bool &paused){

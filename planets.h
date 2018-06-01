@@ -21,6 +21,8 @@ const int moveSpd = 200;
 const int maxMeteors = 10;
 const float imageScale = 0.1;
 
+const int iFonts = 6;
+
 //structures
 struct Planet{
     int x;
@@ -46,7 +48,7 @@ struct Meteor{
 };
 
 enum Direction {NONE, LEFT, RIGHT};
-enum Screen {START, HELP, GAME, GAMEOVER};
+enum Screen {START, HELP, GAME, GAMEOVER, HIGHSCORES};
 //enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
 //Difficulty gameDiff = BEGINNER;
 
@@ -55,7 +57,7 @@ enum Screen {START, HELP, GAME, GAMEOVER};
 //planetsAllegro
 void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
-               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *f, ALLEGRO_FONT *f2);
+               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[]);
 
 //planetsMovement
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage);
@@ -71,8 +73,9 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 //planetsGameFeats
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *font, float score);
 void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash);
+void drawGameOver(ALLEGRO_FONT *tf);
+void drawHighscores(ALLEGRO_FONT *font[]);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
-//void gameOver(ALLEGRO_TIMER *timer, bool &running);
 void getHighscores(ALLEGRO_DISPLAY *display);
