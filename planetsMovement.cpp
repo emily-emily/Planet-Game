@@ -15,7 +15,7 @@ void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *spr
     al_draw_scaled_bitmap(planet, 0, 0, al_get_bitmap_width(planet), al_get_bitmap_height(planet), SCREEN_W / 2 - a.r, SCREEN_H / 2 - a.r, a.r * 2, a.r * 2, 0);
 
     /**gravity fields?**/
-    //al_draw_circle(a.x, a.y, a.r + 0.5 * a.r, MAGENTA, 1);
+    al_draw_circle(a.x, a.y, a.r + minMeteorDistance, WHITE, 1);
 
     //draw sprite
     al_draw_scaled_rotated_bitmap(sprite[s.frame], al_get_bitmap_width(sprite[s.frame]) / 2, al_get_bitmap_height(sprite[s.frame]),

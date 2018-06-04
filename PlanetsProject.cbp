@@ -38,6 +38,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="planets.h" />
 		<Unit filename="planetsAllegro.cpp" />
+		<Unit filename="planetsDrawScr.cpp" />
 		<Unit filename="planetsGameFeats.cpp" />
 		<Unit filename="planetsMovement.cpp" />
 		<Extensions>

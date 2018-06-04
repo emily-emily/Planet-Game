@@ -26,7 +26,7 @@
 	"planets.h"
 	<stdio.h>
 
-1527882682 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\main.cpp
+1528136134 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\main.cpp
 	<allegro5/allegro.h>
 	<time.h>
 	<allegro5/allegro_font.h>
@@ -34,7 +34,7 @@
 	"planets.h"
 	<stdio.h>
 
-1527882682 \\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planets.h
+1528137234 \\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planets.h
 	<allegro5/allegro_font.h>
 
 1527880751 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsallegro.cpp
@@ -46,24 +46,30 @@
 	<allegro5/allegro_ttf.h>
 	"planets.h"
 
-1527621537 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsmovement.cpp
+1528135896 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsmovement.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
 	<cmath>
 	"planets.h"
 	<stdio.h>
 
-1527882983 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsgamefeats.cpp
+1528136428 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsgamefeats.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
-	"planets.h"
+	<math.h>
 	<stdio.h>
+	"planets.h"
 
 1528084038 source:c:\users\x\downloads\planetsproject\planetsgamefeats.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
 	<stdio.h>
+	"planets.h"
+
+1528136493 source:\\ad.ocdsb.ca\studenthome\7\s331473207\github\planetsproject\planetsdrawscr.cpp
+	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
 	"planets.h"
 

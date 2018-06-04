@@ -19,6 +19,7 @@ const int gVel = 40;
 const int moveSpd = 200;
 
 const int maxMeteors = 10;
+const int minMeteorDistance = 100;
 const float imageScale = 0.1;
 
 const int iFonts = 7;
@@ -78,15 +79,20 @@ float rotateAngle(Sprite s, Planet a);
 bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
 //planetsGameFeats
-void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
-void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash);
-void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2);
-void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore);
-int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
-void findBtnXY(Button &btn, ALLEGRO_FONT *f[], char text[20], int y1);
+void setupBtn(Button &btn, char text[20], ALLEGRO_FONT *f[], int y1);
 void drawBtn(Button btn, ALLEGRO_FONT *f[]);
 bool btnIsClicked(Button btn, int mouseX, int mouseY);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
-void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
+void createMeteor(Meteor m[], Planet a, ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
+void reset(Meteor m[], float &score);
 int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int score[]);
+int ranking(int highscores[], float score);
+void submitScore(char name[][maxNameLength], int highscores[], char newName[], float newScore, ALLEGRO_DISPLAY *display);
+
+//planetsDrawScr
+void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
+void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash);
+void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2);
+void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, Button btnSubmit, Button btnNo);
+int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
