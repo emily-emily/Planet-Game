@@ -12,7 +12,6 @@ May 2018*/
 //draws objects
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage){
     //draws planet at the center of the screen
-    //al_draw_circle(a.x, a.y, a.r, WHITE, 2);
     al_draw_scaled_bitmap(planet, 0, 0, al_get_bitmap_width(planet), al_get_bitmap_height(planet), SCREEN_W / 2 - a.r, SCREEN_H / 2 - a.r, a.r * 2, a.r * 2, 0);
 
     /**gravity fields?**/
@@ -21,9 +20,6 @@ void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *spr
     //draw sprite
     al_draw_scaled_rotated_bitmap(sprite[s.frame], al_get_bitmap_width(sprite[s.frame]) / 2, al_get_bitmap_height(sprite[s.frame]),
                                   s.xPos, s.yPos, imageScale, imageScale, rotateAngle(s, a), ALLEGRO_FLIP_HORIZONTAL - s.dir);
-
-    //for testing
-    //al_draw_line(a.x, a.y, s.xPos, s.yPos, WHITE, 1.0);
 
     //draw meteors
     for (int i = 0; i < maxMeteors; i++)
@@ -63,11 +59,6 @@ void jump(Sprite &s, Planet a){
             s.yVel += jumpVel * sin(b) / FPS;
         }
     }
-
-
-    //printf("jump s.xVel is %f\n", jumpVel * cos(b) / FPS);
-    //printf("jump s.yVel is %f\n", jumpVel * sin(b) / FPS);
-
 }
 
 //left-right movement for sprite (relative to planet)
@@ -211,12 +202,6 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh){
     sm.bot = m.yPos + mh;
     sm.left = m.xPos;
     sm.right = m.xPos + mw;
-/*
-    printf("Meteor pos:(%d, %d)\n", (int) m.xPos, (int) m.yPos);
-    printf("Top: %d\n", sm.top);
-    printf("Bot: %d\n", sm.bot);
-    printf("Left: %d\n", sm.left);
-    printf("Right: %d\n", sm.right);*/
 
     if (sp.top > sm.bot || sm.top > sp.bot || sp.left > sm.right || sp.right < sm.left){
         return false;

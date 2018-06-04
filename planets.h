@@ -21,7 +21,8 @@ const int moveSpd = 200;
 const int maxMeteors = 10;
 const float imageScale = 0.1;
 
-const int iFonts = 6;
+const int iFonts = 7;
+const int maxNameLength = 15;
 
 //structures
 struct Planet{
@@ -47,8 +48,14 @@ struct Meteor{
     bool available;
 };
 
+struct Button{
+    int x1, y1;
+    int x2, y2;
+    char text[20];
+};
+
 enum Direction {NONE, LEFT, RIGHT};
-enum Screen {START, HELP, GAME, GAMEOVER, HIGHSCORES};
+enum Screen {START, HELP, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSCORES};
 //enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
 //Difficulty gameDiff = BEGINNER;
 
@@ -71,11 +78,15 @@ float rotateAngle(Sprite s, Planet a);
 bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
 //planetsGameFeats
-void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *font, float score);
+void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
 void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash);
-void drawGameOver(ALLEGRO_FONT *tf);
-void drawHighscores(ALLEGRO_FONT *font[]);
+void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2);
+void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore);
+int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
+void findBtnXY(Button &btn, ALLEGRO_FONT *f[], char text[20], int y1);
+void drawBtn(Button btn, ALLEGRO_FONT *f[]);
+bool btnIsClicked(Button btn, int mouseX, int mouseY);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], ALLEGRO_BITMAP *image);
 void destroyMeteor(Meteor m[], int i);
-void getHighscores(ALLEGRO_DISPLAY *display);
+int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int score[]);

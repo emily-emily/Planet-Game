@@ -85,6 +85,26 @@ int main(int argc, char *argv[]){
         m[i].available = true;
     }
 
+    //buttons
+    //GAMEOVER
+    Button btnHighscores;
+    strcpy(btnHighscores.text, "Highscores");
+    findBtnXY(btnHighscores, font, btnHighscores.text, SCREEN_H - 300);
+    Button btnToMain;
+    strcpy(btnToMain.text, "Main Menu");
+    findBtnXY(btnToMain, font, btnToMain.text, SCREEN_H - 230);
+    //NEWHIGHSCORE
+    Button btnEnter;
+    strcpy(btnEnter.text, "Enter");
+    findBtnXY(btnEnter, font, btnEnter.text, SCREEN_H - 250);
+    Button btnNo;
+    strcpy(btnNo.text, "No thanks");
+    findBtnXY(btnNo, font, btnNo.text, SCREEN_H - 200);
+    //HIGHSCORES
+    Button btnBack;
+    strcpy(btnBack.text, "Back");
+    findBtnXY(btnBack, font, btnBack.text, SCREEN_H - 125);
+
 	//additional setup
     al_start_timer(timer);
     bool paused = false;
@@ -92,8 +112,11 @@ int main(int argc, char *argv[]){
     int iFlash = 0; //for text on start screen
     float score = 0.0;
     bool running = true;
-    int highscores[10] = {0};
-    Screen scr = HIGHSCORES;
+    //score
+    char name[10][maxNameLength];
+    int highscore[10] = {0};
+    //screen
+    Screen scr = START;
 
     //game loop
     while (running){
@@ -105,7 +128,7 @@ int main(int argc, char *argv[]){
         //start screen
         if (scr == START){
             if (ev.type == ALLEGRO_EVENT_TIMER){
-                drawLayout(background, box, START, font[6], score);
+                drawLayout(background, box, scr, font, score);
                 drawStart(font[0], font[6], iFlash);
                 al_flip_display();
                 iFlash = (iFlash + 1) % FPS;
@@ -137,15 +160,15 @@ int main(int argc, char *argv[]){
                 for (int i = 0; i < maxMeteors; i++){
                     if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                     al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
-                        /*** will change ***/
-                        //togglePause(timer, paused);
-                        scr = GAMEOVER;
+                        if (getHighscores(display, name, highscore) == 0 && score > highscore[9])
+                            scr = NEWHIGHSCORE;
+                        else scr = GAMEOVER;
                     }
                 }
 
                 //update new object locations and draw
                 getNewCoordinates(s, m);
-                drawLayout(background, box, GAME, font[2], score);
+                drawLayout(background, box, scr, font, score);
                 drawObjects(planet, a, s, sprite, m, mImage);
                 al_flip_display();
 
@@ -177,22 +200,43 @@ int main(int argc, char *argv[]){
         //game over screen
         if (scr == GAMEOVER){
             if (ev.type == ALLEGRO_EVENT_TIMER){
-                drawLayout(background, box, GAMEOVER, font[6], score);
-                drawGameOver(font[3]);
+                drawLayout(background, box, scr, font, score);
+                drawGameOver(font, score, btnHighscores, btnToMain);
+                al_flip_display();
+            }
+            if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+                if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y))
+                    scr = HIGHSCORES;
+                if (btnIsClicked(btnToMain, ev.mouse.x, ev.mouse.y))
+                    scr = START;
+            }
+        }
+
+        if (scr == NEWHIGHSCORE){
+            if (ev.type == ALLEGRO_EVENT_TIMER){
+                drawLayout(background, box, scr, font, score);
                 al_flip_display();
             }
         }
 
         if (scr == HIGHSCORES){
             if (ev.type == ALLEGRO_EVENT_TIMER){
-                drawLayout(background, box, HIGHSCORES, font[6], score);
-                drawHighscores(font);
-                al_flip_display();
+                drawLayout(background, box, scr, font, score);
+                if (drawHighscores(display, font, btnBack, name, highscore) != 0)
+                    scr = GAMEOVER;
+                else al_flip_display();
+            }
+            if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+                if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                    scr = GAMEOVER;
             }
         }
 
         if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             running = false;
+        if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+            if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                running = false;
     }
 
     //destroy and release data
