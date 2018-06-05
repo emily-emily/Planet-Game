@@ -9,10 +9,7 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
-
-void setupBtn(Button &btn, char text[20], ALLEGRO_FONT *f[], int y1){
-    strcpy(btn.text, text);
-
+void setupBtn(Button &btn, ALLEGRO_FONT *f[], int y1){
     btn.x1 = (SCREEN_W - al_get_text_width(f[5], btn.text)) / 2 - 10;
     btn.x2 = (SCREEN_W + al_get_text_width(f[5], btn.text)) / 2 + 10;
     btn.y1 = y1;
@@ -82,6 +79,12 @@ int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int scor
     for (int i = 0; i < 10; i++){
         fscanf(fptr, "%s", name[i]);
         fscanf(fptr, "%d", &score[i]);
+        printf("%s, %d\n", name[i], score[i]);
+    }
+
+    for (int i = 0; i < 10; i++){
+        if (strcmp(name[i], "") == 0)
+            strcpy(name[i], "NONAME");
     }
 
     fclose(fptr);
@@ -104,15 +107,16 @@ void submitScore(char name[][maxNameLength], int highscore[], char newName[], fl
     //if (!fptr)
     //    al_show_native_message_box(display, "ERROR", "Error loading file", "\"highscores.txt\" could not be opened.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 
-    for (int i = 9; i < rankingIndex; i--){
+    for (int i = 9; i > rankingIndex; i--){
+        strcpy(name[i], name[i - 1]);
         highscore[i] = highscore[i - 1];
     }
     strcpy(name[rankingIndex], newName);
     highscore[rankingIndex] = newScore;
 
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 10; i++)
         fprintf(fptr, "%s %d\n", name[i], highscore[i]);
 
     fclose(fptr);
-    al_show_native_message_box(display, "HIGHSCORE SUBMISSION", "Highscore submitted", "Your highscore has successfully been submitted.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+    al_show_native_message_box(display, "HIGHSCORE SUBMISSION", "Highscore submitted", "Your highscore has successfully been submitted.", NULL, 0);
 }

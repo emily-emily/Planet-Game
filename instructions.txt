@@ -1,0 +1,6 @@
+Movement:
+Use the arrow keys to move and the space bar (haha) to jump.
+
+Objective:
+Avoid the falling meteors for as long as possible on the planet. The white ring around the planet
+indicates the lowest point at which meteors can fall from.

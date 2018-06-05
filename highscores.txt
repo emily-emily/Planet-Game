@@ -1,5 +1,10 @@
-name 345345
-a 34
-s 5
-d 4
-f 3
+Player1 26
+Player1 15
+W 0
+{ 0
+NONAME 0
+NONAME 0
+NONAME 0
+NONAME 0
+NONAME 0
+NONAME 0

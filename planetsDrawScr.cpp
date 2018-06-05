@@ -4,6 +4,7 @@ May 2018*/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+#include <stdio.h>
 #include "planets.h"
 //draws background etc
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score){
@@ -17,18 +18,38 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
         al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), 50, 50, SCREEN_W - 100, SCREEN_H - 100, 0);
 }
 
-void drawStart(ALLEGRO_FONT *tf, ALLEGRO_FONT *bf, int iFlash){
-    al_draw_text(tf, WHITE, (SCREEN_W - al_get_text_width(tf, "GAME TITLE")) / 2, 250, 0, "GAME TITLE");
-    if (iFlash > 20)
-        al_draw_text(bf, WHITE, SCREEN_W / 2, SCREEN_H - 100, ALLEGRO_ALIGN_CENTER, "- Press space to continue -");
-
+void drawStart(ALLEGRO_FONT *f[], Button btn1, int iFlash){
+    al_draw_text(f[0], WHITE, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
+    drawBtn(btn1, f);
+    if (iFlash > 20 * FPS / 60)
+        al_draw_text(f[6], WHITE, SCREEN_W / 2, SCREEN_H - 100, ALLEGRO_ALIGN_CENTER, "- Press space to continue -");
 }
 
-void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2){
+void drawInstructions(ALLEGRO_FONT *f[], Button btn){
+    FILE *fptr;
+    fptr = fopen("instructions.txt", "r");
+    char text[100] = "";
+    char *pch;
+
+    al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "INSTRUCTIONS");
+
+    int i = 0;
+    while (fgets(text, 100, fptr) != NULL){
+        //if (text[sizeof text] == '\n')
+        al_draw_text(f[6], WHITE, 200, 300 + 30 * i, 0, text);
+        i++;
+    }
+
+    drawBtn(btn, f);
+    fclose(fptr);
+}
+
+void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3){
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 200, ALLEGRO_ALIGN_CENTER, "GAME OVER");
     al_draw_textf(f[5], WHITE, SCREEN_W / 2, 270, ALLEGRO_ALIGN_CENTER, "Score: %d", (int)score);
     drawBtn(btn1, f);
     drawBtn(btn2, f);
+    drawBtn(btn3, f);
 }
 
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, Button btnSubmit, Button btnNo){
