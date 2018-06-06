@@ -52,12 +52,25 @@ void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Butt
     drawBtn(btn3, f);
 }
 
-void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, Button btnSubmit, Button btnNo){
+void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
+                      ALLEGRO_USTR *text, int counter, Button btnSubmit, Button btnNo){
+    //draw title and info
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 175, ALLEGRO_ALIGN_CENTER, "NEW HIGHSCORE!");
     al_draw_textf(f[5], WHITE, SCREEN_W / 2, 275, ALLEGRO_ALIGN_CENTER, "Your score: %d", newScore);
     al_draw_textf(f[5], WHITE, SCREEN_W / 2, 315, ALLEGRO_ALIGN_CENTER, "Ranking: %d", ranking(scores, newScore));
 
     al_draw_text(f[5], WHITE, SCREEN_W / 2, 375, ALLEGRO_ALIGN_CENTER, "Enter a name for your highscore:");
+
+    //text box background
+    al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), SCREEN_W / 2 - 150, 420, 300, 50, 0);
+
+    al_draw_ustr(f[5], WHITE, SCREEN_W / 2 - 140, 430, 0, text);
+
+    //draw the flashing thing in textboxes
+    if (counter < 30)
+        al_draw_text(f[5], WHITE, SCREEN_W / 2 - 140 + al_get_ustr_width(f[5], text), 430, 0, "|");
+
+    //buttons
     drawBtn(btnSubmit, f);
     drawBtn(btnNo, f);
 }

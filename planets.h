@@ -95,5 +95,7 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
 void drawStart(ALLEGRO_FONT *f[], Button btn1, int iFlash);
 void drawInstructions(ALLEGRO_FONT *f[], Button btn);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);
-void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, Button btnSubmit, Button btnNo);
+void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
+                ALLEGRO_USTR *text, int counter, Button btnSubmit, Button btnNo);
 int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
+

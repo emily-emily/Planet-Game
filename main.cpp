@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP *box = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
     ALLEGRO_FONT *font[iFonts] = {nullptr};
+    ALLEGRO_USTR *text = al_ustr_new("Player1");
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -118,15 +119,15 @@ int main(int argc, char *argv[]){
 	//additional setup
     al_start_timer(timer);
     bool paused = false;
-    int counter = 0; //counts loops for meteors to spawn once a second
-    int iFlash = 0; //for text on start screen
+    int counter = 0; //counter used for meteor spawning, flashing text
     float score = 0.0;
     bool running = true;
+    char temp[1];
     //score
     char name[10][maxNameLength] = {""};
     int highscore[10] = {0};
     //screen
-    Screen scr = START;
+    Screen scr = NEWHIGHSCORE;
 
     //game loop
     while (running){
@@ -140,9 +141,9 @@ int main(int argc, char *argv[]){
             case START:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     drawLayout(background, box, scr, font, score);
-                    drawStart(font, btnInstructions, iFlash);
+                    drawStart(font, btnInstructions, counter);
                     al_flip_display();
-                    iFlash = (iFlash + 1) % FPS;
+                    counter = (counter + 1) % FPS;
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y))
@@ -150,6 +151,7 @@ int main(int argc, char *argv[]){
                 }
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
                     reset(m, score);
+                    counter = 0;
                     scr = GAME;
                 }
                 break;
@@ -188,8 +190,10 @@ int main(int argc, char *argv[]){
                     for (int i = 0; i < maxMeteors; i++){
                         if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                         al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
-                            if (getHighscores(display, name, highscore) == 0 && score > highscore[9])
+                            if (getHighscores(display, name, highscore) == 0 && score > highscore[9]){
+                                counter = 0;
                                 scr = NEWHIGHSCORE;
+                            }
                             else scr = GAMEOVER;
                         }
                     }
@@ -215,14 +219,6 @@ int main(int argc, char *argv[]){
                     paused = false;
                     togglePause(timer, paused);
                 }
-
-                /*if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    //for testing
-                    s.xPos = ev.mouse.x;
-                    s.xVel = 0;
-                    s.yPos = ev.mouse.y;
-                    s.yVel = 0;
-                }*/
                 break;
 
             case GAMEOVER:
@@ -245,8 +241,23 @@ int main(int argc, char *argv[]){
             case NEWHIGHSCORE:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     drawLayout(background, box, scr, font, score);
-                    drawNewHighscore(font, name, highscore, score, btnSubmit, btnNo);
+                    drawNewHighscore(font, name, highscore, score, box, text, counter, btnSubmit, btnNo);
                     al_flip_display();
+                    counter = (counter + 1) % FPS;
+                }
+                if (ev.type == ALLEGRO_EVENT_KEY_CHAR){
+                    printf("keychar\n");
+
+                    if (ev.keyboard.keycode != ALLEGRO_KEY_ENTER && ev.keyboard.keycode != ALLEGRO_KEY_SPACE && ev.keyboard.keycode != ALLEGRO_KEY_BACKSPACE
+                                    && ev.keyboard.keycode != ALLEGRO_KEY_UP && ev.keyboard.keycode != ALLEGRO_KEY_DOWN
+                                    && ev.keyboard.keycode != ALLEGRO_KEY_LEFT && ev.keyboard.keycode != ALLEGRO_KEY_RIGHT
+                                    && ev.keyboard.keycode != ALLEGRO_KEY_TAB)
+                        al_ustr_append_chr(text, ev.keyboard.unichar);
+                    //text must be 15 charcters or less
+                    if (al_ustr_length(text) > maxNameLength)
+                        al_ustr_remove_chr(text, maxNameLength);
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE)
+                        al_ustr_remove_chr(text, al_ustr_length(text) - 1);
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnNo, ev.mouse.x, ev.mouse.y))
