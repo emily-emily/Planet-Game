@@ -67,7 +67,7 @@ void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
                ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[]);
 
-//planetsMovement
+//planetsMovement: everything movement related
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage);
 void getNewCoordinates(Sprite &s, Meteor m[]);
 void jump(Sprite &s, Planet a);
@@ -78,7 +78,7 @@ void gravity(Sprite &s, Meteor m[], Planet a);
 float rotateAngle(Sprite s, Planet a);
 bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
-//planetsGameFeats
+//planetsGameFeats: miscellaneous functions for buttons, meteors, highscores...
 void setupBtn(Button &btn, ALLEGRO_FONT *f[], int y1);
 void drawBtn(Button btn, ALLEGRO_FONT *f[]);
 bool btnIsClicked(Button btn, int mouseX, int mouseY);
@@ -88,9 +88,9 @@ void destroyMeteor(Meteor m[], int i);
 void reset(Meteor m[], float &score);
 int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int score[]);
 int ranking(int highscores[], float score);
-void submitScore(char name[][maxNameLength], int highscore[], char newName[], float newScore, ALLEGRO_DISPLAY *display);
+void submitScore(char name[][maxNameLength], int highscore[], const char newName[], float newScore, ALLEGRO_DISPLAY *display);
 
-//planetsDrawScr
+//planetsDrawScr: draw screens
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
 void drawStart(ALLEGRO_FONT *f[], Button btn1, int iFlash);
 void drawInstructions(ALLEGRO_FONT *f[], Button btn);

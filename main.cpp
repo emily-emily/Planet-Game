@@ -122,7 +122,6 @@ int main(int argc, char *argv[]){
     int counter = 0; //counter used for meteor spawning, flashing text
     float score = 0.0;
     bool running = true;
-    char temp[1];
     //score
     char name[10][maxNameLength] = {""};
     int highscore[10] = {0};
@@ -140,15 +139,18 @@ int main(int argc, char *argv[]){
             //start screen
             case START:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
+                    //draw layout and screen specific items
                     drawLayout(background, box, scr, font, score);
                     drawStart(font, btnInstructions, counter);
                     al_flip_display();
                     counter = (counter + 1) % FPS;
                 }
+                //button
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y))
                         scr = INSTRUCTIONS;
                 }
+                //start game
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
                     reset(m, score);
                     counter = 0;
@@ -190,6 +192,7 @@ int main(int argc, char *argv[]){
                     for (int i = 0; i < maxMeteors; i++){
                         if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                         al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
+                            //check for high score --> send to submission screen
                             if (getHighscores(display, name, highscore) == 0 && score > highscore[9]){
                                 counter = 0;
                                 scr = NEWHIGHSCORE;
@@ -204,6 +207,7 @@ int main(int argc, char *argv[]){
                     drawObjects(planet, a, s, sprite, m, mImage);
                     al_flip_display();
 
+                    //update variables
                     counter = (counter + 2) % FPS;
                     score += 10.0 / FPS;
                 }
@@ -246,16 +250,15 @@ int main(int argc, char *argv[]){
                     counter = (counter + 1) % FPS;
                 }
                 if (ev.type == ALLEGRO_EVENT_KEY_CHAR){
-                    printf("keychar\n");
-
                     if (ev.keyboard.keycode != ALLEGRO_KEY_ENTER && ev.keyboard.keycode != ALLEGRO_KEY_SPACE && ev.keyboard.keycode != ALLEGRO_KEY_BACKSPACE
                                     && ev.keyboard.keycode != ALLEGRO_KEY_UP && ev.keyboard.keycode != ALLEGRO_KEY_DOWN
                                     && ev.keyboard.keycode != ALLEGRO_KEY_LEFT && ev.keyboard.keycode != ALLEGRO_KEY_RIGHT
                                     && ev.keyboard.keycode != ALLEGRO_KEY_TAB)
                         al_ustr_append_chr(text, ev.keyboard.unichar);
-                    //text must be 15 charcters or less
+                    //text must be 15 characters or less
                     if (al_ustr_length(text) > maxNameLength)
                         al_ustr_remove_chr(text, maxNameLength);
+                    //backspace removes the last character
                     if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE)
                         al_ustr_remove_chr(text, al_ustr_length(text) - 1);
                 }
@@ -264,7 +267,7 @@ int main(int argc, char *argv[]){
                         scr = GAMEOVER;
                     if (btnIsClicked(btnSubmit, ev.mouse.x, ev.mouse.y)){
                         printf("submit");
-                        submitScore(name, highscore, "Player1", score, display);
+                        submitScore(name, highscore, al_cstr(text), score, display);
                         scr = GAMEOVER;
                     }
                 }
@@ -273,6 +276,7 @@ int main(int argc, char *argv[]){
             case HIGHSCORES:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     drawLayout(background, box, scr, font, score);
+                    //if highscores file failed to load
                     if (drawHighscores(display, font, btnBackH, name, highscore) != 0)
                         scr = GAMEOVER;
                     else al_flip_display();
