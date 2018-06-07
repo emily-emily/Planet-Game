@@ -87,13 +87,13 @@ int main(int argc, char *argv[]){
     }
 
     //buttons
-    Button btnBackToStart;
-    strcpy(btnBackToStart.text, "Back");
-    setupBtn(btnBackToStart, font, SCREEN_H - 130);
+    Button btnBack;
+    strcpy(btnBack.text, "Back");
+    setupBtn(btnBack, font, SCREEN_H - 125);
     //START
     Button btnInstructions;
     strcpy(btnInstructions.text, "Instructions");
-    setupBtn(btnInstructions, font, SCREEN_H - 250);
+    setupBtn(btnInstructions, font, SCREEN_H - 230);
     //GAMEOVER
     Button btnHighscores;
     strcpy(btnHighscores.text, "Highscores");
@@ -111,10 +111,6 @@ int main(int argc, char *argv[]){
     Button btnNo;
     strcpy(btnNo.text, "No Thanks");
     setupBtn(btnNo, font, SCREEN_H - 120);
-    //HIGHSCORES
-    Button btnBackH;
-    strcpy(btnBackH.text, "Back");
-    setupBtn(btnBackH, font, SCREEN_H - 125);
 
 	//additional setup
     al_start_timer(timer);
@@ -126,7 +122,8 @@ int main(int argc, char *argv[]){
     char name[10][maxNameLength] = {""};
     int highscore[10] = {0};
     //screen
-    Screen scr = NEWHIGHSCORE;
+    Screen prevScr = START;
+    Screen currentScr = START;
 
     //game loop
     while (running){
@@ -135,38 +132,40 @@ int main(int argc, char *argv[]){
         al_get_keyboard_state(&kState);
         al_wait_for_event(q, &ev);
 
-        switch (scr){
+        switch (currentScr){
             //start screen
             case START:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     //draw layout and screen specific items
-                    drawLayout(background, box, scr, font, score);
-                    drawStart(font, btnInstructions, counter);
+                    drawLayout(background, box, currentScr, font, score);
+                    drawStart(font, btnInstructions, btnHighscores, counter);
                     al_flip_display();
                     counter = (counter + 1) % FPS;
                 }
                 //button
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y))
-                        scr = INSTRUCTIONS;
+                        switchScr(prevScr, currentScr, INSTRUCTIONS);
+                    if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y))
+                        switchScr(prevScr, currentScr, HIGHSCORES);
                 }
                 //start game
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
                     reset(m, score);
                     counter = 0;
-                    scr = GAME;
+                    currentScr = GAME;
                 }
                 break;
             //instructions screen
             case INSTRUCTIONS:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
-                    drawLayout(background, box, scr, font, score);
-                    drawInstructions(font, btnBackToStart);
+                    drawLayout(background, box, currentScr, font, score);
+                    drawInstructions(font, btnBack);
                     al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnBackToStart, ev.mouse.x, ev.mouse.y))
-                        scr = START;
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                        switchScr(prevScr, currentScr, prevScr);
                 }
                 break;
             //gameplay
@@ -179,7 +178,7 @@ int main(int argc, char *argv[]){
                     gravity(s, m, a);
 
                     //movement
-                    if (al_key_down(&kState, ALLEGRO_KEY_SPACE))
+                    if (al_key_down(&kState, ALLEGRO_KEY_UP))
                         jump(s, a);
 
                     if (al_key_down(&kState, ALLEGRO_KEY_LEFT))
@@ -195,15 +194,15 @@ int main(int argc, char *argv[]){
                             //check for high score --> send to submission screen
                             if (getHighscores(display, name, highscore) == 0 && score > highscore[9]){
                                 counter = 0;
-                                scr = NEWHIGHSCORE;
+                                currentScr = NEWHIGHSCORE;
                             }
-                            else scr = GAMEOVER;
+                            else currentScr = GAMEOVER;
                         }
                     }
 
                     //update new object locations and draw
                     getNewCoordinates(s, m);
-                    drawLayout(background, box, scr, font, score);
+                    drawLayout(background, box, currentScr, font, score);
                     drawObjects(planet, a, s, sprite, m, mImage);
                     al_flip_display();
 
@@ -228,23 +227,27 @@ int main(int argc, char *argv[]){
             case GAMEOVER:
             //game over screen
                 if (ev.type == ALLEGRO_EVENT_TIMER){
-                    drawLayout(background, box, scr, font, score);
+                    drawLayout(background, box, currentScr, font, score);
                     drawGameOver(font, score, btnHighscores, btnToMain, btnExit);
                     al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y))
-                        scr = HIGHSCORES;
+                        switchScr(prevScr, currentScr, HIGHSCORES);
                     if (btnIsClicked(btnToMain, ev.mouse.x, ev.mouse.y))
-                        scr = START;
+                        switchScr(prevScr, currentScr, START);
                     if (btnIsClicked(btnExit, ev.mouse.x, ev.mouse.y))
                         running = false;
+                }
+                if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER)
+                    switchScr(prevScr, currentScr, START);
                 }
                 break;
 
             case NEWHIGHSCORE:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
-                    drawLayout(background, box, scr, font, score);
+                    drawLayout(background, box, currentScr, font, score);
                     drawNewHighscore(font, name, highscore, score, box, text, counter, btnSubmit, btnNo);
                     al_flip_display();
                     counter = (counter + 1) % FPS;
@@ -261,29 +264,33 @@ int main(int argc, char *argv[]){
                     //backspace removes the last character
                     if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE)
                         al_ustr_remove_chr(text, al_ustr_length(text) - 1);
+
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                        submitScore(name, highscore, al_cstr(text), score, display);
+                        switchScr(prevScr, currentScr, GAMEOVER);
+                    }
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnNo, ev.mouse.x, ev.mouse.y))
-                        scr = GAMEOVER;
+                        switchScr(prevScr, currentScr, GAMEOVER);
                     if (btnIsClicked(btnSubmit, ev.mouse.x, ev.mouse.y)){
-                        printf("submit");
                         submitScore(name, highscore, al_cstr(text), score, display);
-                        scr = GAMEOVER;
+                        switchScr(prevScr, currentScr, GAMEOVER);
                     }
                 }
                 break;
 
             case HIGHSCORES:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
-                    drawLayout(background, box, scr, font, score);
+                    drawLayout(background, box, currentScr, font, score);
                     //if highscores file failed to load
-                    if (drawHighscores(display, font, btnBackH, name, highscore) != 0)
-                        scr = GAMEOVER;
+                    if (drawHighscores(display, font, btnBack, name, highscore) != 0)
+                        switchScr(prevScr, currentScr, GAMEOVER);
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnBackH, ev.mouse.x, ev.mouse.y))
-                        scr = GAMEOVER;
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                        switchScr(prevScr, currentScr, prevScr);
                 }
                 break;
         }

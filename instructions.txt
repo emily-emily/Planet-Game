@@ -1,6 +1,12 @@
 Movement:
-Use the arrow keys to move and the space bar (haha) to jump.
+Use the arrow keys to move and up to jump.
+Right: clockwise
+Left: counter-clockwise
 
 Objective:
 Avoid the falling meteors for as long as possible on the planet. The white ring around the planet
 indicates the lowest point at which meteors can fall from.
+
+-Special Keys-
+Main menu: press the space bar (haha) to start the game
+Game over screen: press enter to return to main menu

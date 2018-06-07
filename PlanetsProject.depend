@@ -8,7 +8,7 @@
 	<allegro5/allegro_ttf.h>
 	"planets.h"
 
-1528256363 source:c:\users\x\downloads\planetsproject\main.cpp
+1528343265 source:c:\users\x\downloads\planetsproject\main.cpp
 	<allegro5/allegro.h>
 	<time.h>
 	<allegro5/allegro_font.h>
@@ -16,7 +16,7 @@
 	"planets.h"
 	<stdio.h>
 
-1528246832 c:\users\x\downloads\planetsproject\planets.h
+1528340292 c:\users\x\downloads\planetsproject\planets.h
 	<allegro5/allegro_font.h>
 
 1528149456 source:c:\users\x\downloads\planetsproject\planetsmovement.cpp
@@ -61,7 +61,7 @@
 	<stdio.h>
 	"planets.h"
 
-1528155945 source:c:\users\x\downloads\planetsproject\planetsgamefeats.cpp
+1528341359 source:c:\users\x\downloads\planetsproject\planetsgamefeats.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
@@ -75,7 +75,7 @@
 	<stdio.h>
 	"planets.h"
 
-1528254711 source:c:\users\x\downloads\planetsproject\planetsdrawscr.cpp
+1528343304 source:c:\users\x\downloads\planetsproject\planetsdrawscr.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
 	<stdio.h>

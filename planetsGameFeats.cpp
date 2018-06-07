@@ -92,7 +92,7 @@ int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int scor
 
     //check for blank names-- there may not be ten scores in the list
     for (int i = 0; i < 10; i++){
-        if (strcmp(name[i], "") == 0)
+        if (strcmp(name[i], ".") == 0 || strcmp(name[i], "") == 0)
             strcpy(name[i], "NONAME");
     }
 
@@ -126,6 +126,11 @@ void submitScore(char name[][maxNameLength], int highscore[], const char newName
     //insert new highscore
     strcpy(name[rankingIndex], newName);
     highscore[rankingIndex] = newScore;
+
+    //use a dot instead of no name
+    for (int i = 0; i < 10; i++)
+        if (strcmp(name[i], "") == 0)
+            strcpy(name[i], ".");
 
     //print new data into file
     for (int i = 0; i < 10; i++)

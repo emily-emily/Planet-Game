@@ -91,8 +91,9 @@ int ranking(int highscores[], float score);
 void submitScore(char name[][maxNameLength], int highscore[], const char newName[], float newScore, ALLEGRO_DISPLAY *display);
 
 //planetsDrawScr: draw screens
+void switchScr(Screen &prevScr, Screen &currentScr, Screen newScr);
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
-void drawStart(ALLEGRO_FONT *f[], Button btn1, int iFlash);
+void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, int iFlash);
 void drawInstructions(ALLEGRO_FONT *f[], Button btn);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,

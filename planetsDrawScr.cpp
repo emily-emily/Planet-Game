@@ -7,6 +7,11 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
+void switchScr(Screen &prevScr, Screen &currentScr, Screen newScr){
+    prevScr = currentScr;
+    currentScr = newScr;
+}
+
 //draws background etc
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score){
     //background
@@ -19,9 +24,10 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
         al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), 50, 50, SCREEN_W - 100, SCREEN_H - 100, 0);
 }
 
-void drawStart(ALLEGRO_FONT *f[], Button btn1, int iFlash){
+void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, int iFlash){
     al_draw_text(f[0], WHITE, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
     drawBtn(btn1, f);
+    drawBtn(btn2, f);
     //flashing text
     if (iFlash > 20 * FPS / 60)
         al_draw_text(f[6], WHITE, SCREEN_W / 2, SCREEN_H - 100, ALLEGRO_ALIGN_CENTER, "- Press space to continue -");
@@ -36,8 +42,10 @@ void drawInstructions(ALLEGRO_FONT *f[], Button btn){
 
     int i = 0;
     while (fgets(text, 100, fptr) != NULL){
-        //if (text[sizeof text] == '\n')
-        al_draw_text(f[6], WHITE, 200, 300 + 30 * i, 0, text);
+        for (int i = 0; i < 100; i++)
+            if (text[i] == '\n')
+                text[i] = '\0';
+        al_draw_text(f[6], WHITE, 150, 200 + 30 * i, 0, text);
         i++;
     }
 
