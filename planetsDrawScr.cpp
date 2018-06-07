@@ -4,6 +4,7 @@ May 2018*/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_native_dialog.h>
 #include <stdio.h>
 #include "planets.h"
 
@@ -24,19 +25,25 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
         al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), 50, 50, SCREEN_W - 100, SCREEN_H - 100, 0);
 }
 
-void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, int iFlash){
-    al_draw_text(f[0], WHITE, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
+void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, Button btn3, int iFlash){
+    al_draw_text(f[0], WHITE, SCREEN_W / 2, 170, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
     drawBtn(btn1, f);
     drawBtn(btn2, f);
+    drawBtn(btn3, f);
     //flashing text
     if (iFlash > 20 * FPS / 60)
         al_draw_text(f[6], WHITE, SCREEN_W / 2, SCREEN_H - 100, ALLEGRO_ALIGN_CENTER, "- Press space to continue -");
 }
 
-void drawInstructions(ALLEGRO_FONT *f[], Button btn){
+int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
     FILE *fptr;
     fptr = fopen("instructions.txt", "r");
     char text[100] = "";
+
+    if (!fptr){
+        al_show_native_message_box(display, "ERROR", "Error loading file", "\"instructions.txt\" could not be opened.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+        return -1;
+    }
 
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "INSTRUCTIONS");
 
@@ -51,6 +58,7 @@ void drawInstructions(ALLEGRO_FONT *f[], Button btn){
 
     drawBtn(btn, f);
     fclose(fptr);
+    return 0;
 }
 
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3){
@@ -105,5 +113,31 @@ int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char
     }
 
     drawBtn(btn, f);
+    return 0;
+}
+
+int drawCredits(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
+    FILE *fptr;
+    fptr = fopen("credits.txt", "r");
+    char text[100];
+
+    if (!fptr){
+        al_show_native_message_box(display, "ERROR", "Error loading file", "\"credits.txt\" could not be opened.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+        return -1;
+    }
+
+    al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "CREDITS");
+
+    int i = 0;
+    while (fgets(text, 100, fptr) != NULL){
+        for (int i = 0; i < 100; i++)
+            if (text[i] == '\n')
+                text[i] = '\0';
+        al_draw_text(f[5], WHITE, SCREEN_W / 2, 250 + 30 * i, ALLEGRO_ALIGN_CENTER, text);
+        i++;
+    }
+
+    drawBtn(btn, f);
+    fclose(fptr);
     return 0;
 }

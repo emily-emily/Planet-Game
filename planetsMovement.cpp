@@ -10,7 +10,7 @@ May 2018*/
 #include<stdio.h>
 
 //draws objects
-void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage){
+void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int counter, Meteor m[], ALLEGRO_BITMAP *mImage){
     //draws planet at the center of the screen
     al_draw_scaled_bitmap(planet, 0, 0, al_get_bitmap_width(planet), al_get_bitmap_height(planet), SCREEN_W / 2 - a.r, SCREEN_H / 2 - a.r, a.r * 2, a.r * 2, 0);
 
@@ -18,14 +18,35 @@ void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *spr
     al_draw_circle(a.x, a.y, a.r + minMeteorDistance, WHITE, 1);
 
     //draw sprite
-    al_draw_scaled_rotated_bitmap(sprite[s.frame], al_get_bitmap_width(sprite[s.frame]) / 2, al_get_bitmap_height(sprite[s.frame]),
-                                  s.xPos, s.yPos, imageScale, imageScale, rotateAngle(s, a), ALLEGRO_FLIP_HORIZONTAL - s.dir);
+    if (!s.airborne && s.shiftX == 0 && s.shiftY == 0){
+        drawSprite(a, s, sprite, 0);
+    }
+    else if (!s.airborne){
+        if (counter < 15)
+            drawSprite(a, s, sprite, 4);
+        else if (counter < 30)
+            drawSprite(a, s, sprite, 5);
+        else if (counter < 45)
+            drawSprite(a, s, sprite, 6);
+        else if (counter < 60)
+            drawSprite(a, s, sprite, 7);
+    }
+    else
+        if (counter < 30)
+            drawSprite(a, s, sprite, 3);
+        else
+            drawSprite(a, s, sprite, 4);
 
     //draw meteors
     for (int i = 0; i < maxMeteors; i++)
         if (!m[i].available){
             al_draw_scaled_rotated_bitmap(mImage, m[i].w / 2, m[i].h - (m[i].w / 2), m[i].xPos, m[i].yPos, imageScale, imageScale, 0, 0);
         }
+}
+
+void drawSprite(Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int frame){
+    al_draw_scaled_rotated_bitmap(sprite[frame], al_get_bitmap_width(sprite[frame]) / 2, al_get_bitmap_height(sprite[frame]),
+                                s.xPos, s.yPos, imageScale, imageScale, rotateAngle(s, a), ALLEGRO_FLIP_HORIZONTAL - s.dir);
 }
 
 //calculate new locations of objects

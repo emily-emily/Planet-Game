@@ -37,7 +37,6 @@ struct Sprite{
     float xVel, yVel;
     float shiftX;
     float shiftY;
-    int frame;
     int dir; //0 left, 1 right
     bool airborne;
 };
@@ -56,7 +55,7 @@ struct Button{
 };
 
 enum Direction {NONE, LEFT, RIGHT};
-enum Screen {START, INSTRUCTIONS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSCORES};
+enum Screen {START, INSTRUCTIONS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSCORES, CREDITS};
 //enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
 //Difficulty gameDiff = BEGINNER;
 
@@ -68,7 +67,8 @@ int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMA
                ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[]);
 
 //planetsMovement: everything movement related
-void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], Meteor m[], ALLEGRO_BITMAP *mImage);
+void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int counter, Meteor m[], ALLEGRO_BITMAP *mImage);
+void drawSprite(Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int frame);
 void getNewCoordinates(Sprite &s, Meteor m[]);
 void jump(Sprite &s, Planet a);
 void shift(Sprite &s, Planet a, Direction spriteD);
@@ -93,10 +93,11 @@ void submitScore(char name[][maxNameLength], int highscore[], const char newName
 //planetsDrawScr: draw screens
 void switchScr(Screen &prevScr, Screen &currentScr, Screen newScr);
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
-void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, int iFlash);
-void drawInstructions(ALLEGRO_FONT *f[], Button btn);
+void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, Button btn3, int iFlash);
+int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
                 ALLEGRO_USTR *text, int counter, Button btnSubmit, Button btnNo);
 int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
+int drawCredits(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
 
