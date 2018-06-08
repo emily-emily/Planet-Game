@@ -25,8 +25,9 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP *planet = nullptr;
     ALLEGRO_BITMAP *box = nullptr;
     ALLEGRO_KEYBOARD_STATE kState;
-    ALLEGRO_FONT *font[iFonts] = {nullptr};
+    ALLEGRO_FONT *font[numFonts] = {nullptr};
     ALLEGRO_USTR *text = al_ustr_new("Player1");
+    ALLEGRO_SAMPLE *bgMusicTrack[numBgTracks] = {nullptr};
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -44,10 +45,14 @@ int main(int argc, char *argv[]){
     background = al_load_bitmap("images/background.png");
     planet = al_load_bitmap("images/planet.png");
     box = al_load_bitmap("images/box.png");
-    for (int i = 0; i < iFonts; i++)
+    for (int i = 0; i < numFonts; i++)
         font[i] = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80 - 10 * i, 0);
+    al_reserve_samples(numBgTracks);
 
-    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font) != 0)
+    bgMusicTrack[0] = al_load_sample("audio/Dystopic-Factory_Looping.wav");
+    bgMusicTrack[1] = al_load_sample("audio/Frantic-Gameplay.wav");
+
+    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font, bgMusicTrack) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -127,6 +132,12 @@ int main(int argc, char *argv[]){
     Screen prevScr = START;
     Screen currentScr = START;
 
+    //settings
+    bool bgMusicOn = true;
+    int volume = 100; //volume 0 - 100
+
+    playBgMusic(bgMusicTrack, bgMusicOn, 0, volume);
+
     //game loop
     while (running){
         ALLEGRO_EVENT ev;
@@ -157,7 +168,8 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
                     reset(m, score);
                     counter = 0;
-                    currentScr = GAME;
+                    switchScr(prevScr, currentScr, GAME);
+                    playBgMusic(bgMusicTrack, bgMusicOn, 1, volume);
                 }
                 break;
 
@@ -198,6 +210,7 @@ int main(int argc, char *argv[]){
                     for (int i = 0; i < maxMeteors; i++){
                         if (isCollision(s, al_get_bitmap_width(sprite[0]) * imageScale, al_get_bitmap_height(sprite[0]) * imageScale, m[i],
                                         al_get_bitmap_width(mImage) * imageScale, al_get_bitmap_height(mImage) * imageScale) && !m[i].available){
+                            al_stop_samples();
                             //check for high score --> send to submission screen
                             if (getHighscores(display, name, highscore) == 0 && score > highscore[9]){
                                 counter = 0;
@@ -241,14 +254,18 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y))
                         switchScr(prevScr, currentScr, HIGHSCORES);
-                    if (btnIsClicked(btnToMain, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnToMain, ev.mouse.x, ev.mouse.y)){
                         switchScr(prevScr, currentScr, START);
+                        playBgMusic(bgMusicTrack, bgMusicOn, 0, volume);
+                    }
                     if (btnIsClicked(btnExit, ev.mouse.x, ev.mouse.y))
                         running = false;
                 }
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-                    if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER)
-                    switchScr(prevScr, currentScr, START);
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER){
+                        switchScr(prevScr, currentScr, START);
+                        playBgMusic(bgMusicTrack, bgMusicOn, 0, volume);
+                    }
                 }
                 break;
 
@@ -328,8 +345,11 @@ int main(int argc, char *argv[]){
         al_destroy_bitmap(sprite[i]);
     al_destroy_display(display);
     al_destroy_timer(timer);
-    for (int i = 0; i < iFonts; i++)
+    for (int i = 0; i < numFonts; i++)
         al_destroy_font(font[i]);
+    for (int i = 0; i < numBgTracks; i++)
+    al_destroy_sample(bgMusicTrack[i]);
+
 
     return 0;
 }

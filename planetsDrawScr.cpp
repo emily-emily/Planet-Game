@@ -133,7 +133,7 @@ int drawCredits(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
         for (int i = 0; i < 100; i++)
             if (text[i] == '\n')
                 text[i] = '\0';
-        al_draw_text(f[5], WHITE, SCREEN_W / 2, 250 + 30 * i, ALLEGRO_ALIGN_CENTER, text);
+        al_draw_text(f[5], WHITE, SCREEN_W / 2, 250 + 50 * i, ALLEGRO_ALIGN_CENTER, text);
         i++;
     }
 

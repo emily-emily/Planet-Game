@@ -140,3 +140,11 @@ void submitScore(char name[][maxNameLength], int highscore[], const char newName
     //let user know the score was submitted
     al_show_native_message_box(display, "HIGHSCORE SUBMISSION", "Highscore submitted", "Your highscore has successfully been submitted.", NULL, 0);
 }
+
+//start background music track (new screen)
+void playBgMusic(ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int iTrack, int volume){
+    if (bgMusicOn){
+        al_stop_samples();
+        al_play_sample(tracks[iTrack], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+    }
+}

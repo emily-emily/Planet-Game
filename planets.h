@@ -3,6 +3,7 @@ ICS3U P4
 May 2018*/
 
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
 //defined values
 #define WHITE al_map_rgb(255, 255, 255)
 #define BLACK al_map_rgb(0, 0, 0)
@@ -22,7 +23,8 @@ const int maxMeteors = 10;
 const int minMeteorDistance = 100;
 const float imageScale = 0.1;
 
-const int iFonts = 7;
+const int numFonts = 7;
+const int numBgTracks = 2;
 const int maxNameLength = 15;
 
 //structures
@@ -64,7 +66,8 @@ enum Screen {START, INSTRUCTIONS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSCORES, CRED
 //planetsAllegro
 void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
-               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[]);
+               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[],
+               ALLEGRO_SAMPLE *bgMusic[]);
 
 //planetsMovement: everything movement related
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int counter, Meteor m[], ALLEGRO_BITMAP *mImage);
@@ -89,6 +92,7 @@ void reset(Meteor m[], float &score);
 int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int score[]);
 int ranking(int highscores[], float score);
 void submitScore(char name[][maxNameLength], int highscore[], const char newName[], float newScore, ALLEGRO_DISPLAY *display);
+void playBgMusic(ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int iTrack, int volume);
 
 //planetsDrawScr: draw screens
 void switchScr(Screen &prevScr, Screen &currentScr, Screen newScr);
