@@ -8,9 +8,25 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
-void switchScr(Screen &prevScr, Screen &currentScr, Screen newScr){
+void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, Screen newScr){
     prevScr = currentScr;
     currentScr = newScr;
+
+    //audio
+    switch (newScr){
+        case START:
+        case GAMEOVER:
+            al_stop_samples();
+            al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+            break;
+        case GAME:
+            al_stop_samples();
+            al_play_sample(tracks[1], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+            break;
+        case NEWHIGHSCORE:
+            al_stop_samples();
+            al_play_sample(tracks[2], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
 }
 
 //draws background etc
@@ -59,6 +75,13 @@ int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
     drawBtn(btn, f);
     fclose(fptr);
     return 0;
+}
+
+void drawSettings(ALLEGRO_FONT *f[], Button btnBack, bool music, int volume){
+    al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "SETTINGS");
+    al_draw_text(f[4], WHITE, 200, 300, 0, "Volume");
+
+    drawBtn(btnBack, f);
 }
 
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3){

@@ -1,14 +1,16 @@
 # depslib dependency file v1.0
-1527899231 source:c:\users\x\downloads\planetsproject\planetsallegro.cpp
+1528599886 source:c:\users\x\downloads\planetsproject\planetsallegro.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_image.h>
 	<allegro5/allegro_primitives.h>
 	<allegro5/allegro_font.h>
 	<allegro5/allegro_ttf.h>
+	<allegro5/allegro_audio.h>
+	<allegro5/allegro_acodec.h>
 	"planets.h"
 
-1528343265 source:c:\users\x\downloads\planetsproject\main.cpp
+1528686609 source:c:\users\x\downloads\planetsproject\main.cpp
 	<allegro5/allegro.h>
 	<time.h>
 	<allegro5/allegro_font.h>
@@ -16,10 +18,11 @@
 	"planets.h"
 	<stdio.h>
 
-1528340292 c:\users\x\downloads\planetsproject\planets.h
+1528686609 c:\users\x\downloads\planetsproject\planets.h
 	<allegro5/allegro_font.h>
+	<allegro5/allegro_audio.h>
 
-1528149456 source:c:\users\x\downloads\planetsproject\planetsmovement.cpp
+1528599886 source:c:\users\x\downloads\planetsproject\planetsmovement.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
 	<cmath>
@@ -64,7 +67,7 @@
 	<stdio.h>
 	"planets.h"
 
-1528341359 source:c:\users\x\downloads\planetsproject\planetsgamefeats.cpp
+1528685687 source:c:\users\x\downloads\planetsproject\planetsgamefeats.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
@@ -79,9 +82,10 @@
 	<stdio.h>
 	"planets.h"
 
-1528343304 source:c:\users\x\downloads\planetsproject\planetsdrawscr.cpp
+1528686616 source:c:\users\x\downloads\planetsproject\planetsdrawscr.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
+	<allegro5/allegro_native_dialog.h>
 	<stdio.h>
 	"planets.h"
 
