@@ -25,9 +25,24 @@ bool btnIsClicked(Button btn, int mouseX, int mouseY){
 }
 
 //draws a button using the coordinates
-void drawBtn(Button btn, ALLEGRO_FONT *f[]){
-    al_draw_rounded_rectangle(btn.x1, btn.y1, btn.x2, btn.y2, 5, 5, WHITE, 2);
-    al_draw_text(f[5], WHITE, btn.x1 + 10, btn.y1 + 10, 0, btn.text);
+void drawBtn(Button btn, ALLEGRO_FONT *f[], bool white){
+    if (white){
+        al_draw_rounded_rectangle(btn.x1, btn.y1, btn.x2, btn.y2, 5, 5, WHITE, 2);
+        al_draw_text(f[5], WHITE, btn.x1 + 10, btn.y1 + 10, 0, btn.text);
+    }
+    else {
+        al_draw_rounded_rectangle(btn.x1, btn.y1, btn.x2, btn.y2, 5, 5, GRAY, 2);
+        al_draw_text(f[5], GRAY, btn.x1 + 10, btn.y1 + 10, 0, btn.text);
+    }
+}
+
+//is mouse on the slider?
+int mouseOnSlider(int mX, int mY, int mVolume, int sVolume){
+    if (mX < mVolume * 8 + 200 + 10 && mX > mVolume * 8 + 200 - 10 && mY > 320 - 10 && mY < 320 + 10)
+        return 0;
+    else if (mX < sVolume * 8 + 200 + 10 && mX > sVolume * 8 + 200 - 10 && mY > 400 - 10 && mY < 400 + 10)
+        return 1;
+    else return -1;
 }
 
 //pauses or unpauses game

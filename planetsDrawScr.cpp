@@ -8,25 +8,28 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
-void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, Screen newScr){
+void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool music, int volume, Screen newScr){
     prevScr = currentScr;
     currentScr = newScr;
 
     //audio
-    switch (newScr){
-        case START:
-        case GAMEOVER:
-            al_stop_samples();
-            al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
-            break;
-        case GAME:
-            al_stop_samples();
-            al_play_sample(tracks[1], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
-            break;
-        case NEWHIGHSCORE:
-            al_stop_samples();
-            al_play_sample(tracks[2], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+    if (music){
+        switch (newScr){
+            case START:
+            case GAMEOVER:
+                al_stop_samples();
+                al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+                break;
+            case GAME:
+                al_stop_samples();
+                al_play_sample(tracks[1], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+                break;
+            case NEWHIGHSCORE:
+                al_stop_samples();
+                al_play_sample(tracks[2], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+        }
     }
+    else al_stop_samples();
 }
 
 //draws background etc
@@ -41,11 +44,12 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
         al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), 50, 50, SCREEN_W - 100, SCREEN_H - 100, 0);
 }
 
-void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, Button btn3, int iFlash){
+void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash){
     al_draw_text(f[0], WHITE, SCREEN_W / 2, 170, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
-    drawBtn(btn1, f);
-    drawBtn(btn2, f);
-    drawBtn(btn3, f);
+    drawBtn(settings, f, true);
+    drawBtn(btn1, f, true);
+    drawBtn(btn2, f, true);
+    drawBtn(btn3, f, true);
     //flashing text
     if (iFlash > 20 * FPS / 60)
         al_draw_text(f[6], WHITE, SCREEN_W / 2, SCREEN_H - 100, ALLEGRO_ALIGN_CENTER, "- Press space to continue -");
@@ -72,24 +76,33 @@ int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
         i++;
     }
 
-    drawBtn(btn, f);
+    drawBtn(btn, f, true);
     fclose(fptr);
     return 0;
 }
 
-void drawSettings(ALLEGRO_FONT *f[], Button btnBack, bool music, int volume){
+void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button btnBack, bool music, int volume){
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "SETTINGS");
-    al_draw_text(f[4], WHITE, 200, 300, 0, "Volume");
 
-    drawBtn(btnBack, f);
+    //toggle music
+    al_draw_text(f[4], WHITE, 200, 200, 0, "Music:");
+    drawBtn(M1, f, music);
+    drawBtn(M2, f, !music);
+
+    al_draw_text(f[4], WHITE, 200, 270, 0, "Music volume");
+    //volume slider
+    al_draw_line(200, 320, SCREEN_W - 200, 320, WHITE, 2);
+    al_draw_filled_circle(volume * 8 + 200, 320, 10, WHITE);
+
+    drawBtn(btnBack, f, true);
 }
 
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3){
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 200, ALLEGRO_ALIGN_CENTER, "GAME OVER");
     al_draw_textf(f[5], WHITE, SCREEN_W / 2, 270, ALLEGRO_ALIGN_CENTER, "Score: %d", (int)score);
-    drawBtn(btn1, f);
-    drawBtn(btn2, f);
-    drawBtn(btn3, f);
+    drawBtn(btn1, f, true);
+    drawBtn(btn2, f, true);
+    drawBtn(btn3, f, true);
 }
 
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
@@ -111,8 +124,8 @@ void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[
         al_draw_text(f[5], WHITE, SCREEN_W / 2 - 140 + al_get_ustr_width(f[5], text), 430, 0, "|");
 
     //buttons
-    drawBtn(btnSubmit, f);
-    drawBtn(btnNo, f);
+    drawBtn(btnSubmit, f, true);
+    drawBtn(btnNo, f, true);
 }
 
 int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]){
@@ -135,7 +148,7 @@ int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char
         al_draw_textf(f[5], WHITE, SCREEN_W / 2 + 305, 200 + 72 * (i - 5), 0, "%d", score[i]);
     }
 
-    drawBtn(btn, f);
+    drawBtn(btn, f, true);
     return 0;
 }
 
@@ -160,7 +173,7 @@ int drawCredits(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
         i++;
     }
 
-    drawBtn(btn, f);
+    drawBtn(btn, f, true);
     fclose(fptr);
     return 0;
 }

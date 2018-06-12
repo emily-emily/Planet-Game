@@ -10,3 +10,4 @@ indicates the lowest point at which meteors can fall from.
 -Special Keys-
 Main menu: press the space bar (haha) to start the game
 Game over screen: press enter to return to main menu
+Press 'P' in game to pause

@@ -7,7 +7,7 @@ May 2018*/
 //defined values
 #define WHITE al_map_rgb(255, 255, 255)
 #define BLACK al_map_rgb(0, 0, 0)
-#define MAGENTA al_map_rgb(240, 50, 230)
+#define GRAY al_map_rgb(100, 100, 100)
 #define RED al_map_rgb(255, 0, 0)
 
 //constant values
@@ -58,8 +58,6 @@ struct Button{
 
 enum Direction {NONE, LEFT, RIGHT};
 enum Screen {START, INSTRUCTIONS, SETTINGS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSCORES, CREDITS};
-//enum Difficulty {BEGINNER = 8, EASY = 4, NORMAL = 3, HARD = 1};
-//Difficulty gameDiff = BEGINNER;
 
 //prototypes
 
@@ -83,7 +81,8 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 
 //planetsGameFeats: miscellaneous functions for buttons, meteors, highscores...
 void setupBtn(Button &btn, ALLEGRO_FONT *f[], int y1);
-void drawBtn(Button btn, ALLEGRO_FONT *f[]);
+void drawBtn(Button btn, ALLEGRO_FONT *f[], bool white);
+int mouseOnSlider(int mX, int mY, int mVolume, int sVolume);
 bool btnIsClicked(Button btn, int mouseX, int mouseY);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
 void createMeteor(Meteor m[], Planet a, ALLEGRO_BITMAP *image);
@@ -97,12 +96,11 @@ void playBgMusic(ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int iTrack, int volum
 //planetsDrawScr: draw screens
 void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, Screen newScr);
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
-void drawStart(ALLEGRO_FONT *f[], Button btn1, Button btn2, Button btn3, int iFlash);
+void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash);
 int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
-void drawSettings(ALLEGRO_FONT *f[], Button btnBack, bool music, int volume);
+void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button btnBack, bool music, int volume);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
                 ALLEGRO_USTR *text, int counter, Button btnSubmit, Button btnNo);
 int drawHighscores(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn, char name[][maxNameLength], int score[]);
 int drawCredits(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
-
