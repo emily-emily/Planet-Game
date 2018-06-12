@@ -36,6 +36,11 @@ void drawBtn(Button btn, ALLEGRO_FONT *f[], bool white){
     }
 }
 
+void playSFX(ALLEGRO_SAMPLE *SFX, int volume, bool SFXOn){
+    if (SFXOn)
+        al_play_sample(SFX, volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+}
+
 //is mouse on the slider?
 int mouseOnSlider(int mX, int mY, int mVolume, int sVolume){
     if (mX < mVolume * 8 + 200 + 10 && mX > mVolume * 8 + 200 - 10 && mY > 320 - 10 && mY < 320 + 10)
@@ -57,7 +62,7 @@ void togglePause(ALLEGRO_TIMER *timer, bool &paused){
     }
 }
 
-void createMeteor(Meteor m[], Planet a, ALLEGRO_BITMAP *image){
+void createMeteor(Meteor m[], Planet a){
     int i = 0;
     //look for next available meteor
     while (!m[i].available && i < maxMeteors - 1){
@@ -69,7 +74,9 @@ void createMeteor(Meteor m[], Planet a, ALLEGRO_BITMAP *image){
             m[i].xPos = rand() % SCREEN_W;
             m[i].yPos = rand() % SCREEN_H;
         }
-        while (sqrt(pow(m[i].xPos - a.x, 2) + pow(m[i].yPos - a.y, 2)) <= a.r + minMeteorDistance);
+        //until meteor is outside of the minimum and within the spawn area
+        while (sqrt(pow(m[i].xPos - a.x, 2) + pow(m[i].yPos - a.y, 2)) <= a.r + minMeteorDistance || m[i].xPos < 250 || m[i].xPos > 950);
+        printf("%f\n", m[i].xPos);
 
         //overwrite destroyed meteor info
         m[i].xVel = 0;
@@ -129,11 +136,6 @@ void submitScore(char name[][maxNameLength], int highscore[], const char newName
     FILE *fptr;
     fptr = fopen("highscores.txt", "w");
 
-    //not necessary...
-    //if (!fptr)
-    //    al_show_native_message_box(display, "ERROR", "Error loading file", "\"highscores.txt\" could not be opened.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-
-    //move all existing highscores down to make space for the new highscore
     for (int i = 9; i > rankingIndex; i--){
         strcpy(name[i], name[i - 1]);
         highscore[i] = highscore[i - 1];

@@ -65,14 +65,14 @@ int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
         return -1;
     }
 
-    al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "INSTRUCTIONS");
+    al_draw_text(f[3], WHITE, SCREEN_W / 2, 100, ALLEGRO_ALIGN_CENTER, "INSTRUCTIONS");
 
     int i = 0;
     while (fgets(text, 100, fptr) != NULL){
         for (int i = 0; i < 100; i++)
             if (text[i] == '\n')
                 text[i] = '\0';
-        al_draw_text(f[6], WHITE, 150, 200 + 30 * i, 0, text);
+        al_draw_text(f[6], WHITE, 150, 180 + 25 * i, 0, text);
         i++;
     }
 

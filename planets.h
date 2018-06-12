@@ -14,17 +14,19 @@ May 2018*/
 const int SCREEN_W = 1200;
 const int SCREEN_H = 700;
 
+//gameplay
 const int FPS = 60;
 const int jumpVel = 800;
 const int gVel = 40;
 const int moveSpd = 200;
-
 const int maxMeteors = 10;
 const int minMeteorDistance = 100;
 const float imageScale = 0.1;
 
+//other
 const int numFonts = 7;
-const int numBgTracks = 3;
+const int numMusTracks = 3;
+const int numSFXTracks = 2;
 const int maxNameLength = 15;
 
 //structures
@@ -65,13 +67,13 @@ enum Screen {START, INSTRUCTIONS, SETTINGS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSC
 void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
                ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[],
-               ALLEGRO_SAMPLE *bgMusic[]);
+               ALLEGRO_SAMPLE *bgMusic[], ALLEGRO_SAMPLE *SFX[]);
 
 //planetsMovement: everything movement related
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int counter, Meteor m[], ALLEGRO_BITMAP *mImage);
 void drawSprite(Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int frame);
 void getNewCoordinates(Sprite &s, Meteor m[]);
-void jump(Sprite &s, Planet a);
+void jump(Sprite &s, Planet a, float &score);
 void shift(Sprite &s, Planet a, Direction spriteD);
 bool isGrounded(Sprite s, Planet a);
 bool misGrounded(Meteor m[], int i, Planet a);
@@ -82,16 +84,16 @@ bool isCollision(Sprite p, int sw, int sh, Meteor m, int mw, int mh);
 //planetsGameFeats: miscellaneous functions for buttons, meteors, highscores...
 void setupBtn(Button &btn, ALLEGRO_FONT *f[], int y1);
 void drawBtn(Button btn, ALLEGRO_FONT *f[], bool white);
+void playSFX(ALLEGRO_SAMPLE *SFX, int volume, bool SFXOn);
 int mouseOnSlider(int mX, int mY, int mVolume, int sVolume);
 bool btnIsClicked(Button btn, int mouseX, int mouseY);
 void togglePause(ALLEGRO_TIMER *timer, bool &paused);
-void createMeteor(Meteor m[], Planet a, ALLEGRO_BITMAP *image);
+void createMeteor(Meteor m[], Planet a);
 void destroyMeteor(Meteor m[], int i);
 void reset(Meteor m[], float &score);
 int getHighscores(ALLEGRO_DISPLAY *display, char name[][maxNameLength], int score[]);
 int ranking(int highscores[], float score);
 void submitScore(char name[][maxNameLength], int highscore[], const char newName[], float newScore, ALLEGRO_DISPLAY *display);
-void playBgMusic(ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int iTrack, int volume);
 
 //planetsDrawScr: draw screens
 void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, Screen newScr);

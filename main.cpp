@@ -28,7 +28,8 @@ int main(int argc, char *argv[]){
     ALLEGRO_KEYBOARD_STATE kState;
     ALLEGRO_FONT *font[numFonts] = {nullptr};
     ALLEGRO_USTR *text = al_ustr_new("Player1");
-    ALLEGRO_SAMPLE *musicTracks[numBgTracks] = {nullptr};
+    ALLEGRO_SAMPLE *musicTracks[numMusTracks] = {nullptr};
+    ALLEGRO_SAMPLE *SFXTracks[numSFXTracks] = {nullptr};
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -48,13 +49,16 @@ int main(int argc, char *argv[]){
     box = al_load_bitmap("images/box.png");
     for (int i = 0; i < numFonts; i++)
         font[i] = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80 - 10 * i, 0);
-    al_reserve_samples(numBgTracks);
+    al_reserve_samples(numMusTracks + numSFXTracks);
 
     musicTracks[0] = al_load_sample("audio/Dystopic-Factory_Looping.wav");
     musicTracks[1] = al_load_sample("audio/Disco-Ants-Go-Clubbin_Looping.wav");
     musicTracks[2] = al_load_sample("audio/1_person_cheering-Jett_Rifkin-1851518140.wav");
 
-    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font, musicTracks) != 0)
+    SFXTracks[0] = al_load_sample("");
+    SFXTracks[1] = al_load_sample("");
+
+    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font, musicTracks, SFXTracks) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -149,6 +153,7 @@ int main(int argc, char *argv[]){
     al_start_timer(timer);
     bool paused = false;
     int counter = 0; //counter used for meteor spawning, flashing text
+    float meteorsPS = 2.0;
     float score = 0.0;
     bool running = true;
     //score
@@ -160,6 +165,7 @@ int main(int argc, char *argv[]){
 
     //settings
     bool musicOn = true;
+    bool SFXOn = true;
     int mVolume = 100; //mVolume 0 - 100
     int sVolume = 100;
     int mouseDrag = -1;
@@ -186,14 +192,22 @@ int main(int argc, char *argv[]){
                 }
                 //button click
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnSettings, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnSettings, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, SETTINGS);
-                    if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y))
+                    }
+                    if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, INSTRUCTIONS);
-                    if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y))
+                    }
+                    if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, HIGHSCORES);
-                    if (btnIsClicked(btnCredits, ev.mouse.x, ev.mouse.y))
+                    }
+                    if (btnIsClicked(btnCredits, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, CREDITS);
+                    }
                 }
                 //start game
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
@@ -212,8 +226,10 @@ int main(int argc, char *argv[]){
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
+                    }
                 }
                 break;
 
@@ -248,12 +264,18 @@ int main(int argc, char *argv[]){
                     al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnMusicOn, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnMusicOn, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         musicOn = true;
-                    if (btnIsClicked(btnMusicOff, ev.mouse.x, ev.mouse.y))
+                    }
+                    if (btnIsClicked(btnMusicOff, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         musicOn = false;
-                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                    }
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
+                    }
 
                     mouseDrag = mouseOnSlider(ev.mouse.x, ev.mouse.y, mVolume, sVolume);
                 }
@@ -264,15 +286,19 @@ int main(int argc, char *argv[]){
             //gameplay
             case GAME:
                 if (ev.type == ALLEGRO_EVENT_TIMER){
-                    //spawn a meteor twice a second
-                    if (counter == 0 || counter == 30)
-                        createMeteor(m, a, mImage);
+                    //spawn a meteor n times per second
+                    for (int i = 0; i < meteorsPS - 1; i++)
+                        if (counter == (int) ((float)FPS / meteorsPS * i))
+                            createMeteor(m, a);
+                    //increase difficulty
+                    meteorsPS += 0.1 / FPS;
+
                     //apply gravity
                     gravity(s, m, a);
 
                     //movement
                     if (al_key_down(&kState, ALLEGRO_KEY_UP))
-                        jump(s, a);
+                        jump(s, a, score);
 
                     if (al_key_down(&kState, ALLEGRO_KEY_LEFT))
                         shift(s, a, LEFT);
@@ -389,8 +415,10 @@ int main(int argc, char *argv[]){
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
+                    }
                 }
                 break;
 
@@ -402,8 +430,10 @@ int main(int argc, char *argv[]){
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y))
+                    if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
+                        playSFX(SFXTracks[0], sVolume, SFXOn);
                         switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
+                    }
                 }
                 break;
         }
@@ -423,7 +453,7 @@ int main(int argc, char *argv[]){
     al_destroy_timer(timer);
     for (int i = 0; i < numFonts; i++)
         al_destroy_font(font[i]);
-    for (int i = 0; i < numBgTracks; i++)
+    for (int i = 0; i < numMusTracks; i++)
     al_destroy_sample(musicTracks[i]);
 
     return 0;

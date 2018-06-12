@@ -62,15 +62,15 @@ void getNewCoordinates(Sprite &s, Meteor m[]){
     }
 }
 
-void jump(Sprite &s, Planet a){
-    float x, y;
-    float b;
-    x = s.xPos - a.x;
-    y = s.yPos - a.y;
-
-    b = atan(y / x);
-
+void jump(Sprite &s, Planet a, float &score){
     if (isGrounded(s, a)){
+        float x, y;
+        float b;
+        x = s.xPos - a.x;
+        y = s.yPos - a.y;
+
+        b = atan(y / x);
+
         if (x < 0){
             s.xVel -= jumpVel * cos(b) / FPS;
             s.yVel -= jumpVel * sin(b) / FPS;
@@ -79,6 +79,8 @@ void jump(Sprite &s, Planet a){
             s.xVel += jumpVel * cos(b) / FPS;
             s.yVel += jumpVel * sin(b) / FPS;
         }
+
+        score += 10;
     }
 }
 

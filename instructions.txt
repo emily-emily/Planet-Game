@@ -5,7 +5,10 @@ Left: counter-clockwise
 
 Objective:
 Avoid the falling meteors for as long as possible on the planet. The white ring around the planet
-indicates the lowest point at which meteors can fall from.
+indicates the lowest point at which meteors can fall from. Difficulty increases as the game progresses.
+
+Score:
+The score increases automatically with time, and you also get 10 points for each jump you make.
 
 -Special Keys-
 Main menu: press the space bar (haha) to start the game
