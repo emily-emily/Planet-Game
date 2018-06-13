@@ -43,10 +43,14 @@ void playSFX(ALLEGRO_SAMPLE *SFX, int volume, bool SFXOn){
 
 //is mouse on the slider?
 int mouseOnSlider(int mX, int mY, int mVolume, int sVolume){
-    if (mX < mVolume * 8 + 200 + 10 && mX > mVolume * 8 + 200 - 10 && mY > 320 - 10 && mY < 320 + 10)
+    if (mX < mVolume * 8 + 200 + 10 && mX > mVolume * 8 + 200 - 10 && mY > 320 - 10 && mY < 320 + 10){
+        printf("Slider 1!\n");
         return 0;
-    else if (mX < sVolume * 8 + 200 + 10 && mX > sVolume * 8 + 200 - 10 && mY > 400 - 10 && mY < 400 + 10)
+    }
+    else if (mX < sVolume * 8 + 200 + 10 && mX > sVolume * 8 + 200 - 10 && mY > 500 - 10 && mY < 500 + 10){
+        printf("Slider 2!\n");
         return 1;
+    }
     else return -1;
 }
 

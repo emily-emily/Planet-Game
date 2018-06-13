@@ -39,8 +39,7 @@ struct Planet{
 struct Sprite{
     float xPos, yPos;
     float xVel, yVel;
-    float shiftX;
-    float shiftY;
+    float shiftX, shiftY;
     int dir; //0 left, 1 right
     bool airborne;
 };
@@ -100,7 +99,7 @@ void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bo
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
 void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash);
 int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
-void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button btnBack, bool music, int volume);
+void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button S1, Button S2, Button btnBack, bool music, int mVol, bool SFXOn, int sVol);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);
 void drawNewHighscore(ALLEGRO_FONT *f[], char name[][maxNameLength], int scores[], int newScore, ALLEGRO_BITMAP *box,
                 ALLEGRO_USTR *text, int counter, Button btnSubmit, Button btnNo);

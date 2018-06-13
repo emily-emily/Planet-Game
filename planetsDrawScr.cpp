@@ -45,7 +45,7 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
 }
 
 void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash){
-    al_draw_text(f[0], WHITE, SCREEN_W / 2, 170, ALLEGRO_ALIGN_CENTER, "GAME TITLE");
+    al_draw_text(f[0], WHITE, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTER, "THE PLANETS GAME");
     drawBtn(settings, f, true);
     drawBtn(btn1, f, true);
     drawBtn(btn2, f, true);
@@ -81,7 +81,7 @@ int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn){
     return 0;
 }
 
-void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button btnBack, bool music, int volume){
+void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button S1, Button S2, Button btnBack, bool music, int mVol, bool SFXOn, int sVol){
     al_draw_text(f[2], WHITE, SCREEN_W / 2, 125, ALLEGRO_ALIGN_CENTER, "SETTINGS");
 
     //toggle music
@@ -89,10 +89,20 @@ void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button btnBack, bool 
     drawBtn(M1, f, music);
     drawBtn(M2, f, !music);
 
-    al_draw_text(f[4], WHITE, 200, 270, 0, "Music volume");
+    al_draw_text(f[4], WHITE, 200, 260, 0, "Music volume");
     //volume slider
     al_draw_line(200, 320, SCREEN_W - 200, 320, WHITE, 2);
-    al_draw_filled_circle(volume * 8 + 200, 320, 10, WHITE);
+    al_draw_filled_circle(mVol * 8 + 200, 320, 10, WHITE);
+
+    //toggle SFX
+    al_draw_text(f[4], WHITE, 200, 380, 0, "SFX:");
+    drawBtn(S1, f, SFXOn);
+    drawBtn(S2, f, !SFXOn);
+
+    al_draw_text(f[4], WHITE, 200, 440, 0, "SFX volume");
+    //volume slider
+    al_draw_line(200, 500, SCREEN_W - 200, 500, WHITE, 2);
+    al_draw_filled_circle(sVol * 8 + 200, 500, 10, WHITE);
 
     drawBtn(btnBack, f, true);
 }

@@ -1,11 +1,10 @@
 Movement:
 Use the arrow keys to move and up to jump.
-Right: clockwise
-Left: counter-clockwise
+Right: clockwise // Left: counter-clockwise
 
 Objective:
 Avoid the falling meteors for as long as possible on the planet. The white ring around the planet
-indicates the lowest point at which meteors can fall from. Difficulty increases as the game progresses.
+indicates the lowest point at which meteors can fall from. Difficulty increases with time.
 
 Score:
 The score increases automatically with time, and you also get 10 points for each jump you make.
