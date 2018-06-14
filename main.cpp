@@ -1,6 +1,6 @@
 /*Emily Yu
 ICS3U P4
-May 2018
+May-June 2018
 Planets Project - ICS3U Summative*/
 
 #include <allegro5/allegro.h>
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]){
     al_start_timer(timer);
     bool paused = false;
     int counter = 0; //counter used for meteor spawning, flashing text
-    float meteorsPS = 2.0;
+    float meteorsPS = 2.0; //meteors per second
     float score = 0.0;
     bool running = true;
     //score
@@ -185,10 +185,9 @@ int main(int argc, char *argv[]){
     int sVolume = 100;
     int mouseDrag = -1;
     int playing = 0; //music track currently playing
-    //window position
+    //window position and mouse cursor position (used in settings)
     int wX = 0, wY = 0;
     al_get_window_position(display, &wX, &wY);
-    //mouse curcor position
     int mX = 0, mY = 0;
 
     //start music

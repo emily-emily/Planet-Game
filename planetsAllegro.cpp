@@ -1,6 +1,6 @@
 /*Emily Yu
 ICS3U P4
-May 2018*/
+May-June 2018*/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>

@@ -7,7 +7,7 @@ Avoid the falling meteors for as long as possible on the planet. The white ring 
 indicates the lowest point at which meteors can fall from. Difficulty increases with time.
 
 Score:
-The score increases automatically with time, and you also get 10 points for each jump you make.
+The score increases automatically with time, and bonus points are awarded with a jump.
 
 -Special Keys-
 Main menu: press the space bar (haha) to start the game

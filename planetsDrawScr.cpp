@@ -1,6 +1,6 @@
 /*Emily Yu
 ICS3U P4
-May 2018*/
+May-June 2018*/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -8,7 +8,7 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
-//switch screena and play appropriate music
+//switch screens and play appropriate music
 void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool music, int volume, int &track, Screen newScr){
     prevScr = currentScr;
     currentScr = newScr;
@@ -63,7 +63,7 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
 }
 
 void drawStart(ALLEGRO_FONT *f[], Button settings, ALLEGRO_BITMAP *icon, Button btn1, Button btn2, Button btn3, int iFlash){
-    al_draw_text(f[0], WHITE, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTER, "THE PLANETS GAME");
+    al_draw_text(f[0], WHITE, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTER, "THE PLANET GAME");
     drawBtn(settings, f, true);
     al_draw_scaled_bitmap(icon, 0, 0, al_get_bitmap_width(icon), al_get_bitmap_height(icon), settings.x1 + 5, settings.y1 + 5,
                         settings.x2 - settings.x1 - 10, settings.y2 - settings.y1 - 10, 0);
