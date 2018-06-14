@@ -38,17 +38,15 @@ void drawBtn(Button btn, ALLEGRO_FONT *f[], bool white){
 
 void playSFX(ALLEGRO_SAMPLE *SFX, int volume, bool SFXOn){
     if (SFXOn)
-        al_play_sample(SFX, volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(SFX, (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
 }
 
 //is mouse on the slider?
 int mouseOnSlider(int mX, int mY, int mVolume, int sVolume){
     if (mX < mVolume * 8 + 200 + 10 && mX > mVolume * 8 + 200 - 10 && mY > 320 - 10 && mY < 320 + 10){
-        printf("Slider 1!\n");
         return 0;
     }
     else if (mX < sVolume * 8 + 200 + 10 && mX > sVolume * 8 + 200 - 10 && mY > 500 - 10 && mY < 500 + 10){
-        printf("Slider 2!\n");
         return 1;
     }
     else return -1;
@@ -80,7 +78,6 @@ void createMeteor(Meteor m[], Planet a){
         }
         //until meteor is outside of the minimum and within the spawn area
         while (sqrt(pow(m[i].xPos - a.x, 2) + pow(m[i].yPos - a.y, 2)) <= a.r + minMeteorDistance || m[i].xPos < 250 || m[i].xPos > 950);
-        printf("%f\n", m[i].xPos);
 
         //overwrite destroyed meteor info
         m[i].xVel = 0;

@@ -8,7 +8,8 @@ May 2018*/
 #include <stdio.h>
 #include "planets.h"
 
-void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool music, int volume, Screen newScr){
+//switch screena and play appropriate music
+void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool music, int volume, int &track, Screen newScr){
     prevScr = currentScr;
     currentScr = newScr;
 
@@ -16,20 +17,37 @@ void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bo
     if (music){
         switch (newScr){
             case START:
+            case INSTRUCTIONS:
+            case SETTINGS:
+            case HIGHSCORES:
+            case CREDITS:
             case GAMEOVER:
-                al_stop_samples();
-                al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+                if (track != 0){
+                    al_stop_samples();
+                    al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+                    track = 0;
+                }
                 break;
             case GAME:
                 al_stop_samples();
                 al_play_sample(tracks[1], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+                track = 1;
                 break;
             case NEWHIGHSCORE:
                 al_stop_samples();
                 al_play_sample(tracks[2], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_ONCE, NULL);
+                track = 2;
+        }
+        if (newScr == START && prevScr == SETTINGS){
+            al_stop_samples();
+            al_play_sample(tracks[0], (float) volume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+            track = 0;
         }
     }
-    else al_stop_samples();
+    else{
+        al_stop_samples();
+        track = -1;
+    }
 }
 
 //draws background etc
@@ -44,9 +62,11 @@ void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALL
         al_draw_scaled_bitmap(box, 0, 0, al_get_bitmap_width(box), al_get_bitmap_height(box), 50, 50, SCREEN_W - 100, SCREEN_H - 100, 0);
 }
 
-void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash){
+void drawStart(ALLEGRO_FONT *f[], Button settings, ALLEGRO_BITMAP *icon, Button btn1, Button btn2, Button btn3, int iFlash){
     al_draw_text(f[0], WHITE, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTER, "THE PLANETS GAME");
     drawBtn(settings, f, true);
+    al_draw_scaled_bitmap(icon, 0, 0, al_get_bitmap_width(icon), al_get_bitmap_height(icon), settings.x1 + 5, settings.y1 + 5,
+                        settings.x2 - settings.x1 - 10, settings.y2 - settings.y1 - 10, 0);
     drawBtn(btn1, f, true);
     drawBtn(btn2, f, true);
     drawBtn(btn3, f, true);
@@ -94,12 +114,15 @@ void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button S1, Button S2,
     al_draw_line(200, 320, SCREEN_W - 200, 320, WHITE, 2);
     al_draw_filled_circle(mVol * 8 + 200, 320, 10, WHITE);
 
+    //note
+    al_draw_text(f[6], WHITE, 200, 340, 0, "*music changes will apply when settings is closed");
+
     //toggle SFX
-    al_draw_text(f[4], WHITE, 200, 380, 0, "SFX:");
+    al_draw_text(f[4], WHITE, 200, 390, 0, "SFX:");
     drawBtn(S1, f, SFXOn);
     drawBtn(S2, f, !SFXOn);
 
-    al_draw_text(f[4], WHITE, 200, 440, 0, "SFX volume");
+    al_draw_text(f[4], WHITE, 200, 450, 0, "SFX volume");
     //volume slider
     al_draw_line(200, 500, SCREEN_W - 200, 500, WHITE, 2);
     al_draw_filled_circle(sVol * 8 + 200, 500, 10, WHITE);

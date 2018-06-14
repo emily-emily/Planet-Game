@@ -26,7 +26,6 @@ const float imageScale = 0.1;
 //other
 const int numFonts = 7;
 const int numMusTracks = 3;
-const int numSFXTracks = 2;
 const int maxNameLength = 15;
 
 //structures
@@ -65,8 +64,8 @@ enum Screen {START, INSTRUCTIONS, SETTINGS, GAME, GAMEOVER, NEWHIGHSCORE, HIGHSC
 //planetsAllegro
 void initializeAllegro();
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
-               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[],
-               ALLEGRO_SAMPLE *bgMusic[], ALLEGRO_SAMPLE *SFX[]);
+               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_BITMAP *icon, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q,
+               ALLEGRO_FONT *font[], ALLEGRO_SAMPLE *bgMusic[], ALLEGRO_SAMPLE *SFX);
 
 //planetsMovement: everything movement related
 void drawObjects(ALLEGRO_BITMAP *planet, Planet a, Sprite s, ALLEGRO_BITMAP *sprite[], int counter, Meteor m[], ALLEGRO_BITMAP *mImage);
@@ -95,9 +94,9 @@ int ranking(int highscores[], float score);
 void submitScore(char name[][maxNameLength], int highscore[], const char newName[], float newScore, ALLEGRO_DISPLAY *display);
 
 //planetsDrawScr: draw screens
-void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, Screen newScr);
+void switchScr(Screen &prevScr, Screen &currentScr, ALLEGRO_SAMPLE *tracks[], bool bgMusicOn, int volume, int &track, Screen newScr);
 void drawLayout(ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *box, Screen scr, ALLEGRO_FONT *f[], float score);
-void drawStart(ALLEGRO_FONT *f[], Button settings, Button btn1, Button btn2, Button btn3, int iFlash);
+void drawStart(ALLEGRO_FONT *f[], Button settings, ALLEGRO_BITMAP *icon, Button btn1, Button btn2, Button btn3, int iFlash);
 int drawInstructions(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *f[], Button btn);
 void drawSettings(ALLEGRO_FONT *f[], Button M1, Button M2, Button S1, Button S2, Button btnBack, bool music, int mVol, bool SFXOn, int sVol);
 void drawGameOver(ALLEGRO_FONT *f[], float score, Button btn1, Button btn2, Button btn3);

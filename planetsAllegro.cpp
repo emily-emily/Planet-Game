@@ -25,15 +25,15 @@ void initializeAllegro(){
 }
 
 int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMAP *mImage, ALLEGRO_BITMAP *background,
-               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[],
-               ALLEGRO_SAMPLE *music[], ALLEGRO_SAMPLE *SFX[]){
+               ALLEGRO_BITMAP *planet, ALLEGRO_BITMAP *box, ALLEGRO_BITMAP *icon, ALLEGRO_TIMER *timer, ALLEGRO_EVENT_QUEUE *q, ALLEGRO_FONT *font[],
+               ALLEGRO_SAMPLE *music[], ALLEGRO_SAMPLE *SFX){
     if (!display){
         al_show_native_message_box(display, "Error", "Error", "Failed to initialize display!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
         return -1;
     }
     //images
     for (int i = 0; i < 8; i++){
-        if (!sprite[i] || !mImage || !background || !planet || !box){
+        if (!sprite[i] || !mImage || !background || !planet || !box || !icon){
             al_show_native_message_box(display, "Error", "Error", "Failed to load image!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
             al_destroy_display(display);
             return -1;
@@ -61,8 +61,7 @@ int checkSetup(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *sprite[], ALLEGRO_BITMA
 		al_destroy_display(display);
       	return -1;
 	}
-	for (int i = 0; i < numSFXTracks; i++)
-    if (!SFX[i]) {
+    if (!SFX) {
 		al_show_native_message_box(display, "Error", "Error", "Failed to load soundtrack!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
 		al_destroy_display(display);
       	return -1;

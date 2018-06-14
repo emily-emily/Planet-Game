@@ -24,12 +24,13 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP *background = nullptr;
     ALLEGRO_BITMAP *planet = nullptr;
     ALLEGRO_BITMAP *box = nullptr;
+    ALLEGRO_BITMAP *settingsIcon = nullptr;
     ALLEGRO_MOUSE_STATE mState;
     ALLEGRO_KEYBOARD_STATE kState;
     ALLEGRO_FONT *font[numFonts] = {nullptr};
     ALLEGRO_USTR *text = al_ustr_new("Player1");
     ALLEGRO_SAMPLE *musicTracks[numMusTracks] = {nullptr};
-    ALLEGRO_SAMPLE *SFXTracks[numSFXTracks] = {nullptr};
+    ALLEGRO_SAMPLE *SFXTrack = nullptr;
 
     //create and load
     display = al_create_display(SCREEN_W, SCREEN_H);
@@ -47,18 +48,18 @@ int main(int argc, char *argv[]){
     background = al_load_bitmap("images/background.png");
     planet = al_load_bitmap("images/planet.png");
     box = al_load_bitmap("images/box.png");
+    settingsIcon = al_load_bitmap("images/settings.png");
     for (int i = 0; i < numFonts; i++)
         font[i] = al_load_ttf_font("font-Sansation/Sansation-Regular.ttf", 80 - 10 * i, 0);
-    al_reserve_samples(numMusTracks + numSFXTracks);
+    al_reserve_samples(numMusTracks + 1);
 
     musicTracks[0] = al_load_sample("audio/Dystopic-Factory_Looping.wav");
     musicTracks[1] = al_load_sample("audio/Disco-Ants-Go-Clubbin_Looping.wav");
     musicTracks[2] = al_load_sample("audio/1_person_cheering-Jett_Rifkin-1851518140.wav");
 
-    SFXTracks[0] = al_load_sample("audio/UI_Quirky19.wav");
-    SFXTracks[1] = al_load_sample("audio/UI_Quirky31.wav");
+    SFXTrack = al_load_sample("audio/UI_Quirky19.wav");
 
-    if (checkSetup(display, sprite, mImage, background, planet, box, timer, q, font, musicTracks, SFXTracks) != 0)
+    if (checkSetup(display, sprite, mImage, background, planet, box, settingsIcon, timer, q, font, musicTracks, SFXTrack) != 0)
         return -1;
 
     al_set_window_title(display, "Planet Game");
@@ -134,7 +135,7 @@ int main(int argc, char *argv[]){
     strcpy(btnSFXOn.text, "ON");
     btnSFXOn.x1 = 300;
     btnSFXOn.x2 = btnSFXOn.x1 + al_get_text_width(font[5], btnSFXOn.text) + 20;
-    btnSFXOn.y1 = 380;
+    btnSFXOn.y1 = 390;
     btnSFXOn.y2 = btnSFXOn.y1 + 50;
 
     Button btnSFXOff;
@@ -183,7 +184,14 @@ int main(int argc, char *argv[]){
     int mVolume = 100; //mVolume 0 - 100
     int sVolume = 100;
     int mouseDrag = -1;
+    int playing = 0; //music track currently playing
+    //window position
+    int wX = 0, wY = 0;
+    al_get_window_position(display, &wX, &wY);
+    //mouse curcor position
+    int mX = 0, mY = 0;
 
+    //start music
     al_play_sample(musicTracks[0], (float) mVolume / 100, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
 
     //game loop
@@ -200,34 +208,34 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     //draw layout and screen specific items
                     drawLayout(background, box, currentScr, font, score);
-                    drawStart(font, btnSettings, btnInstructions, btnHighscores, btnCredits, counter);
+                    drawStart(font, btnSettings, settingsIcon, btnInstructions, btnHighscores, btnCredits, counter);
                     al_flip_display();
                     counter = (counter + 1) % FPS;
                 }
                 //button click
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnSettings, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, SETTINGS);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, SETTINGS);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnInstructions, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, INSTRUCTIONS);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, INSTRUCTIONS);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, HIGHSCORES);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, HIGHSCORES);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnCredits, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, CREDITS);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, CREDITS);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                 }
                 //start game
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN && ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
                     reset(m, score);
                     counter = 0;
-                    switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAME);
+                    switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAME);
                 }
                 break;
 
@@ -236,13 +244,13 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     drawLayout(background, box, currentScr, font, score);
                     if (drawInstructions(display, font, btnBack) != 0)
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, START);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, START);
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, prevScr);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                 }
                 break;
@@ -254,21 +262,25 @@ int main(int argc, char *argv[]){
 
                     //sliders
                     if (mouseDrag != -1 && al_mouse_button_down(&mState, 1)){
-                        //find mouse position
-                        int mX = 0;
-                        int mY = 0;
+                        //update window position
+                        al_get_window_position(display, &wX, &wY);
+                        //update mouse cursor position relative to monitor
                         al_get_mouse_cursor_position(&mX, &mY);
+                        //get mouse cursor position relative to window
+                        mX -= wX;
+                        mY -= wY;
+
                         //change appropriate slider based on mouse location
                         switch (mouseDrag){
                             case 0:
-                                mVolume = (mX - 550) / 8;
+                                mVolume = (mX - 200) / 8;
                                 if (mVolume > 100)
                                     mVolume = 100;
                                 if (mVolume < 0)
                                     mVolume = 0;
                                 break;
                             case 1:
-                                sVolume = (mX - 550) / 8;
+                                sVolume = (mX - 200) / 8;
                                 if (sVolume > 100)
                                     sVolume = 100;
                                 if (sVolume < 0)
@@ -280,23 +292,23 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnMusicOn, ev.mouse.x, ev.mouse.y)){
                         musicOn = true;
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnMusicOff, ev.mouse.x, ev.mouse.y)){
                         musicOn = false;
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnSFXOn, ev.mouse.x, ev.mouse.y)){
                         SFXOn = true;
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnSFXOff, ev.mouse.x, ev.mouse.y)){
                         SFXOn = false;
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, prevScr);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
 
                     mouseDrag = mouseOnSlider(ev.mouse.x, ev.mouse.y, mVolume, sVolume);
@@ -336,9 +348,9 @@ int main(int argc, char *argv[]){
                             //check for high score --> send to submission screen
                             if (getHighscores(display, name, highscore) == 0 && score > highscore[9]){
                                 counter = 0;
-                                switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, NEWHIGHSCORE);
+                                switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, NEWHIGHSCORE);
                             }
-                            else switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAMEOVER);
+                            else switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAMEOVER);
                         }
                     }
 
@@ -377,20 +389,20 @@ int main(int argc, char *argv[]){
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnHighscores, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, HIGHSCORES);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, HIGHSCORES);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     if (btnIsClicked(btnToMain, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, START);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, START);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnExit, ev.mouse.x, ev.mouse.y))
                         running = false;
                 }
                 if (ev.type == ALLEGRO_EVENT_KEY_DOWN){
-                    if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, START);
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE){
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, START);
                     }
                 }
                 break;
@@ -418,18 +430,18 @@ int main(int argc, char *argv[]){
 
                     if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER){
                         submitScore(name, highscore, al_cstr(text), score, display);
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAMEOVER);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAMEOVER);
                     }
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnNo, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAMEOVER);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAMEOVER);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                     if (btnIsClicked(btnSubmit, ev.mouse.x, ev.mouse.y)){
                         submitScore(name, highscore, al_cstr(text), score, display);
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAMEOVER);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAMEOVER);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                 }
                 break;
@@ -440,13 +452,13 @@ int main(int argc, char *argv[]){
                     drawLayout(background, box, currentScr, font, score);
                     //if highscores file failed to load
                     if (drawHighscores(display, font, btnBack, name, highscore) != 0)
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, GAMEOVER);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, GAMEOVER);
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, prevScr);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                 }
                 break;
@@ -455,13 +467,13 @@ int main(int argc, char *argv[]){
                 if (ev.type == ALLEGRO_EVENT_TIMER){
                     drawLayout(background, box, currentScr, font, score);
                     if (drawCredits(display, font, btnBack) != 0)
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, prevScr);
                     else al_flip_display();
                 }
                 if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
                     if (btnIsClicked(btnBack, ev.mouse.x, ev.mouse.y)){
-                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, prevScr);
-                        playSFX(SFXTracks[0], sVolume, SFXOn);
+                        switchScr(prevScr, currentScr, musicTracks, musicOn, mVolume, playing, prevScr);
+                        playSFX(SFXTrack, sVolume, SFXOn);
                     }
                 }
                 break;
