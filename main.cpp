@@ -421,8 +421,8 @@ int main(int argc, char *argv[]){
                                     && ev.keyboard.keycode != ALLEGRO_KEY_TAB)
                         al_ustr_append_chr(text, ev.keyboard.unichar);
                     //text must be 15 characters or less
-                    if (al_ustr_length(text) > maxNameLength)
-                        al_ustr_remove_chr(text, maxNameLength);
+                    if (al_ustr_length(text) > maxNameLength - 1)
+                        al_ustr_remove_chr(text, maxNameLength - 1);
                     //backspace removes the last character
                     if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE)
                         al_ustr_remove_chr(text, al_ustr_length(text) - 1);

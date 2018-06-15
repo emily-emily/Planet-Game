@@ -26,7 +26,8 @@ const float imageScale = 0.1;
 //other
 const int numFonts = 7;
 const int numMusTracks = 3;
-const int maxNameLength = 15;
+//had problems when this was 15; changed to 16
+const int maxNameLength = 16;
 
 //structures
 struct Planet{
